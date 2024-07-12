@@ -30,16 +30,8 @@ export default function CreateGroup({ onGroupCreated }: CreateGroupProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 max-w-md mx-auto">
-      <div className="flex justify-between items-center mb-6">
-        <Link href="/" passHref>
-          <button className="btn btn-primary">Cancel</button>
-        </Link>
-        <h1 className="text-xl font-semibold">Create a group</h1>
-        <button type="submit" className="btn btn-primary">
-          Done
-        </button>
-      </div>
+    <form onSubmit={handleSubmit} className="flex flex-col space-y-4 p-4 max-w-md mx-auto">
+      <h1 className="text-3xl font-semibold">Create a group</h1>
 
       <div className="mb-6">
         {/* <div className="border border-dashed border-gray-300 rounded-lg p-4 mb-2 flex items-center justify-center">
@@ -50,7 +42,7 @@ export default function CreateGroup({ onGroupCreated }: CreateGroupProps) {
           placeholder="Group name"
           value={groupName}
           onChange={(e: React.ChangeEvent<HTMLInputElement>) => setGroupName(e.target.value)}
-          className="w-full border-b border-gray-300 pb-2 focus:outline-none focus:border-green-500"
+          className="input input-bordered w-full max-w-xs"
           required
         />
       </div>
@@ -66,15 +58,23 @@ export default function CreateGroup({ onGroupCreated }: CreateGroupProps) {
             <button
               key={label}
               onClick={() => setGroupType(label as Group["type"])}
-              className={`flex items-center space-x-1 px-4 py-2 rounded-full ${
-                groupType === label ? "bg-green-100 text-green-600" : "bg-gray-100 text-gray-600"
-              }`}
+              className={`btn btn-outline ${groupType === label ? "btn-active" : ""}`}
             >
               <Icon size={16} />
               <span>{label}</span>
             </button>
           ))}
         </div>
+      </div>
+
+      <div className="flex flex-col justify-between items-center mb-6 space-x-2 space-y-2 pt-8">
+        <Link href="/" passHref className={"w-full"}>
+          <button className="btn btn-error w-full">Cancel</button>
+        </Link>
+
+        <button type="submit" className="btn btn-primary w-full">
+          Create Group
+        </button>
       </div>
     </form>
   );
