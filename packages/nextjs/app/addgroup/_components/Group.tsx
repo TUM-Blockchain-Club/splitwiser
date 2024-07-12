@@ -22,7 +22,7 @@ export default function CreateGroup({ onGroupCreated }: CreateGroupProps) {
       if (onGroupCreated) {
         onGroupCreated(newGroup);
       }
-      router.push("/groups"); // Redirect to groups page after successful creation
+      router.push(`/groups/${newGroup.id}`); // Redirect to groups page after successful creation
     } catch (error) {
       console.error("Failed to create group", error);
       // You might want to show an error message to the user here
