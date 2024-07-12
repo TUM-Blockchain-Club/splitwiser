@@ -37,7 +37,7 @@ export default function GroupsList() {
           </li>
         ))}
       </ul>
-      <Link href="/groups/create">
+      <Link href="/addgroup">
         <a className="mt-4 inline-block bg-blue-500 text-white px-4 py-2 rounded">Create New Group</a>
       </Link>
     </div>

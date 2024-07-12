@@ -1,4 +1,5 @@
-// pages/groups/[groupId].tsx
+"use client";
+
 import { useEffect, useState } from "react";
 import { useRouter } from "next/router";
 import { Group, getGroupById } from "../../../services/groupService";
