@@ -24,7 +24,9 @@ const Home: NextPage = () => {
           </div>
           {primaryWallet && (
             <div className="flex justify-center items-center space-x-2 space-y-2 flex-col sm:flex-row">
-              <button className="btn btn-primary">Start a Group</button>
+              <Link href="/addgroup" passHref>
+                <button className="btn btn-primary">Start a Group</button>
+              </Link>
               <button className="btn btn-primary">Add an Expense</button>
               <button className="btn btn-primary">Settle Up</button>
             </div>
