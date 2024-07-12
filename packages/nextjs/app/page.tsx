@@ -13,7 +13,7 @@ const Home: NextPage = () => {
   return (
     <>
       <div className="flex items-center flex-col flex-grow pt-10">
-        <div className="px-5">
+        <div className="px-5 flex flex-col space-y-6">
           <h1 className="text-center">
             <span className="block text-2xl mb-2">Welcome to</span>
             <span className="block text-4xl font-bold">SplitWiser</span>
@@ -23,8 +23,10 @@ const Home: NextPage = () => {
             <Address address={connectedAddress} />
           </div>
           {primaryWallet && (
-            <div className="flex justify-center items-center space-x-2 flex-col sm:flex-row">
-              <button className="btn btn-primary">Start a Group</button>
+            <div className="flex justify-center items-center space-x-2 space-y-2 flex-col sm:flex-row">
+              <Link href="/addgroup" passHref>
+                <button className="btn btn-primary">Start a Group</button>
+              </Link>
               <button className="btn btn-primary">Add an Expense</button>
               <button className="btn btn-primary">Settle Up</button>
             </div>
