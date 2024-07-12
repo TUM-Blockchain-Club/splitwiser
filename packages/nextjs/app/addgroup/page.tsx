@@ -12,10 +12,6 @@ const Group: NextPage = () => {
   return (
     <>
       <CreateGroup />
-      <div className="text-center mt-8 bg-secondary p-10">
-        <h1 className="text-4xl my-0">Add a Group</h1>
-        <p className="text-neutral">You can add friends to your group and start splitting expenses.</p>
-      </div>
     </>
   );
 };
