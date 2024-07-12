@@ -1,13 +1,62 @@
-#  🏗 Scaffold-ETH 2 (Hackathon Starter Kit Version)
+# SplitWiser - Reimagining Web3 Onboarding
+ 
+A holistic peer-to-peer app built on Base for the future of user-centric Web3.
+ 
+Project Overview
+ 
+[Project Name] is a Web3 app designed to bridge the gap between traditional user experiences and the decentralized world. We prioritize simplicity, inclusivity, and real-world utility to empower users and foster a vibrant Web3 community.
+ 
+## Key Features:
+ 
+Gasless Transactions: Utilizing [specific gasless solution, e.g., Layer-2 network, rollup], we eliminate the financial barrier to entry, making Web3 accessible to everyone.
+ 
+Cross-Chain Compatibility: Built on Base, our app is designed to seamlessly integrate with other blockchains, fostering interoperability and user choice.
+ 
+Intuitive User Interface: We leverage best practices in design and UX to create a seamless and enjoyable experience for all users.
+ 
+Integrated payments: Instead of relying on 3 parties and  manualy you can utilis the acount id for direct payments.
 
-![](./banner.png)
-
-<h4 align="center">
-  <a href="https://www.youtube.com/watch?v=dkONR9dJD2g">Video Walkthrough</a>
-</h4>
-
-🧪 An open-source, up-to-date toolkit for building decentralized applications (dapps) on the Ethereum blockchain. It's designed to make it easier for developers to create and deploy smart contracts and build user interfaces that interact with those contracts as well as add EthGlobal partner technology such as account abstraction, chain abstraction, onboarding, transaction exploring, EVM networks, custom chains and much more!
-
+Integrated currency Conversion:  
+Free alternative: to a web2 solution with a Web 3 backend twist.
+ 
+# Addressing the Hackathon Challenges
+ 
+## Base 2k: Best Consumer UX
+ 
+We prioritize user experience through:
+ 
+Clean and intuitive design: Our app interface is built with simplicity and user-friendliness in mind.
+ 
+Guided onboarding: New users are seamlessly guided through the initial setup process.
+ 
+Contextual help and support: Integrated documentation and support tools ensure users can easily find answers to their questions.
+ 
+ 
+We're grateful to Scaffold Eth for providing the tools and resources that helped us achieve this focus on user experience.
+ 
+## Circle 4k: Emerging Use Case
+ 
+[Project Name] introduces a novel use case for Web3: [Clearly explain your emerging use case and its impact]. This innovative application leverages the power of blockchain technology to create [positive outcome or value proposition]. We're excited to explore this potential with Circle's support.
+ 
+## Dynamics SocialFi 2k:
+ 
+We integrate social features to foster a vibrant community within our app:
+ 
+We encurage social intracions to hppen on chain. By creating an easier trip with your web3 andn non web 2.0 friend.
+ 
+The Dynamics SocialFi framework has been instrumental in helping us implement these features and create a truly social Web3 experience.
+ 
+## ENS Best Use Case:
+ 
+We utilize ENS names to enhance user experience:
+ 
+Personalized Identifiers: Users can search for their friends ENS names and verfy with the profil image the right wallet adress.
+We Upgrade our user interface by desipalying their name s
+Simplified Interactions: ENS names make it easier to connect and interact with other users, eliminating the need to memorize complex wallet addresses.
+ 
+ 
+### Special Thanks to Circle, Scaffold Eth, and Dynamics for their support.
+ 
 ## Requirements
 
 Before you begin, you need to install the following tools:
@@ -29,8 +78,8 @@ To get started with Scaffold-ETH 2 Hacker Edition, follow the steps below:
 1. Clone this repo & install dependencies
 
 ```
-git clone https://github.com/dynamic-labs/hackathon-starter-kit
-cd hackathon-starter-kit
+git clone https://github.com/TUM-Blockchain-Club/splitwiser.git
+cd packages
 yarn install
 ```
 
