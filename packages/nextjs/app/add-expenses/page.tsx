@@ -4,10 +4,12 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
+import { useReadContract } from "wagmi";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 
 const AddExpense = () => {
   const searchParams = useSearchParams();
-  const groupsIds: string[] = [];
+  // const groupsIds: string[] = [];
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(searchParams.get("groupId"));
   const [customDistribution, setCustomDistribution] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0);
@@ -20,6 +22,14 @@ const AddExpense = () => {
   const handleRemoveCustomField = (index: number) => {
     setCustomFields(customFields.filter((_, idx) => idx !== index));
   };
+
+  const data = useDeployedContractInfo("Splitwiser");
+
+  const result = useReadContract({
+    abi: data?.data?.abi,
+    address: data?.data?.address,
+    functionName: "getUserGroups",
+  });
 
   const handleCustomFieldChange = (index: number, field: "address" | "amount", value: string | number) => {
     const updatedFields = customFields.map((customField, idx) => {
@@ -53,7 +63,7 @@ const AddExpense = () => {
                 Choose a group
               </option>
             )}
-            {groupsIds.map(groupId => (
+            {result?.data?.map(groupId => (
               <option key={groupId} value={groupId} selected={groupId == selectedGroupId}>
                 groupId
               </option>
