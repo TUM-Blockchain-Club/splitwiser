@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { config } from "./config";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { HeartIcon, HomeIcon, PaperPlaneIcon } from "@radix-ui/react-icons";
+import { getTransactionReceipt } from "@wagmi/core";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 import { Group } from "~~/types/app";
 
@@ -23,10 +25,18 @@ export default function CreateGroup() {
       if (!connectedAddress) {
         throw new Error("No wallet connected");
       } else {
-        return await writeYourContractAsync({
+        console.log("connectedAddress", connectedAddress);
+        const result = await writeYourContractAsync({
           functionName: "createGroup",
           args: [groupName, [connectedAddress], "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"],
         });
+        if (!result) {
+          throw new Error("No result returned");
+        } else {
+          const trx = await getTransactionReceipt(config, { hash: result });
+          console.log("Transaction Content", trx.logs[0].topics[1]);
+          return trx.logs[0].topics[1];
+        }
       }
     } catch (e) {
       console.error("Error setting greeting:", e);
@@ -48,12 +58,7 @@ export default function CreateGroup() {
       // // Wait for the transaction to be mined and get the receipt
       // const receipt = await txResult.wait();
 
-      // Get the return value from the transaction receipt
-      // This assumes your contract emits the return value as the last topic in the event log
       const onChainGroupId = txResult;
-
-      // Convert the hex string to a decimal number
-      // const groupIdDecimal = parseInt(onChainGroupId, 16);
 
       console.log("Group created on chain", txResult);
 

@@ -47,10 +47,12 @@ export default function GroupDetailPage() {
       if (!selectedFriendAddr || !onChainGroupId) {
         throw new Error("No Addredd Entered");
       } else {
-        return await writeYourContractAsync({
+        const res = await writeYourContractAsync({
           functionName: "inviteMember",
-          args: [BigInt(onChainGroupId), selectedFriendAddr],
+          args: [BigInt(onChainGroupId), String(selectedFriendAddr)],
         });
+        setShowAddFriends(false);
+        return res;
       }
     } catch (e) {
       console.error("Error setting greeting:", e);

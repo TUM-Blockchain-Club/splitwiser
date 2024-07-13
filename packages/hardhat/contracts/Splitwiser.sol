@@ -25,6 +25,8 @@ contract Splitwiser {
         uint256 amount;
     }
 
+    event GroupCreated(uint256 indexed groupId, address creator);
+
     uint256 private nextGroupId = 1; // Keep track of the next groupId
     mapping(uint256 => Group) public groups;
     mapping(address => uint256[]) public pendingGroupInvites; // Database of pending user invitations to a group(s)
@@ -78,7 +80,7 @@ contract Splitwiser {
         return userGroups;
     }
 
-    function createGroup(string memory _name, address[] memory _members, address _token) external returns (uint256) {
+    function createGroup(string memory _name, address[] memory _members, address _token) external {
         uint256 currentGroupId = nextGroupId;
         Group storage newGroup = groups[currentGroupId];
         nextGroupId = nextGroupId + 1;
@@ -91,8 +93,7 @@ contract Splitwiser {
 
         newGroup.nextDebtId = 1;
         newGroup.token = _token;
-
-        return currentGroupId;
+        emit GroupCreated(currentGroupId, msg.sender);
     }
 
     function isMember(uint256 _groupId, address _member) internal view returns (bool) {

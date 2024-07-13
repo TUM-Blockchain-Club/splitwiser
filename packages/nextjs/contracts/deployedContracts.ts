@@ -375,7 +375,7 @@ const deployedContracts = {
   },
   84532: {
     Splitwiser: {
-      address: "0xB42Ea8667d4b6363C0DdbcD3C42905113afDC9A8",
+      address: "0xC2968f8c253178846a346c9f364c7A1799b71626",
       abi: [
         {
           anonymous: false,
@@ -449,6 +449,25 @@ const deployedContracts = {
             },
           ],
           name: "DebtSettled",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "groupId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "creator",
+              type: "address",
+            },
+          ],
+          name: "GroupCreated",
           type: "event",
         },
         {
@@ -563,13 +582,7 @@ const deployedContracts = {
             },
           ],
           name: "createGroup",
-          outputs: [
-            {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
-            },
-          ],
+          outputs: [],
           stateMutability: "nonpayable",
           type: "function",
         },
