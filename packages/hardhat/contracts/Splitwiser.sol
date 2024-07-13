@@ -45,6 +45,11 @@ contract Splitwiser {
         _;
     }
 
+    function getGroupName(uint256 _groupId) external view returns (string memory) {
+        require(_groupId < nextGroupId, "Group does not exists.");
+        return groups[_groupId].groupName;
+    }
+
     function acceptInvite(uint256 _groupId) public {
         uint256[] storage invitations = pendingGroupInvites[msg.sender];
         require(invitations.length > 0, "No pending invites");
