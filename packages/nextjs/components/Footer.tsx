@@ -46,16 +46,6 @@ export const Footer = () => {
       <div className="w-full">
         <ul className="menu menu-horizontal w-full">
           <div className="flex justify-center items-center gap-2 text-sm w-full flex-col space-y-4">
-            <div className="text-center">
-              <a
-                href="https://github.com/TUM-Blockchain-Club/splitwiser"
-                target="_blank"
-                rel="noreferrer"
-                className="link"
-              >
-                Fork me
-              </a>
-            </div>
             <div className="flex justify-center items-center gap-2">
               <p className="m-0 text-center">
                 Built with <HeartIcon className="inline-block h-4 w-4" /> by

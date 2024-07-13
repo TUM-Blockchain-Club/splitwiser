@@ -48,5 +48,9 @@
   },
   "engines": {
     "node": ">=18.17.0"
+  },
+  "dependencies": {
+    "@urql/core": "^5.0.4",
+    "urql": "^4.1.0"
   }
 }

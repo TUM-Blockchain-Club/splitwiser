@@ -3,46 +3,68 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { Group, addGroup } from "../../../services/groupService";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { HeartIcon, HomeIcon, PaperPlaneIcon } from "@radix-ui/react-icons";
+import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+import { Group } from "~~/types/app";
 
-// import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
-
-interface CreateGroupProps {
-  onGroupCreated?: (group: Group) => void;
-}
-
-export default function CreateGroup({ onGroupCreated }: CreateGroupProps) {
+export default function CreateGroup() {
   const [groupName, setGroupName] = useState("");
   const [groupType, setGroupType] = useState("Trip");
   const router = useRouter();
 
-  async function handleSubmit(e: { preventDefault: () => void }) {
-    e.preventDefault();
+  const { primaryWallet } = useDynamicContext();
+  const connectedAddress = primaryWallet?.address;
+
+  const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("Splitwiser");
+
+  async function createGroupOnChain(): Promise<any> {
     try {
-      const newGroup = await addGroup({ name: groupName, type: groupType });
-      if (onGroupCreated) {
-        onGroupCreated(newGroup);
-      }
-      router.push(`/groups/${newGroup.id}`); // Redirect to groups page after successful creation
+      return await writeYourContractAsync({
+        functionName: "createGroup",
+        args: [groupName, [connectedAddress]],
+      });
+    } catch (e) {
+      console.error("Error setting greeting:", e);
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!connectedAddress) {
+      console.error("No wallet connected");
+      return;
+    }
+
+    try {
+      // Create the group on-chain and get the transaction result
+      const txResult = await createGroupOnChain();
+
+      // Wait for the transaction to be mined and get the receipt
+      const receipt = await txResult.wait();
+
+      // Get the return value from the transaction receipt
+      // This assumes your contract emits the return value as the last topic in the event log
+      const onChainGroupId = receipt.logs[0].topics[receipt.logs[0].topics.length - 1];
+
+      // Convert the hex string to a decimal number
+      const groupIdDecimal = parseInt(onChainGroupId, 16);
+
+      console.log("Group created on chain", txResult);
+
+      const queryParams = new URLSearchParams({
+        name: groupName,
+        type: groupType,
+        onChainId: groupIdDecimal.toString(),
+      }).toString();
+
+      // Navigate to the new page
+      router.push(`/groups/${groupIdDecimal.toString()}?${queryParams}`);
     } catch (error) {
       console.error("Failed to create group", error);
       // You might want to show an error message to the user here
     }
   }
-
-  // const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("Splitwiser");
-
-  // async function createGroup(group: Omit<Group, "id">) {
-  //   try {
-  //     await writeYourContractAsync({
-  //       functionName: "createGroup",
-  //       args: ['Group 1', ['walletAddress1']],
-  //     });
-  //   } catch (e) {
-  //       console.error("Error setting greeting:", e);
-  //     }
-  // }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col space-y-4 p-4 max-w-md mx-3">
