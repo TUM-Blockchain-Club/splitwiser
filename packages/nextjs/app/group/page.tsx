@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import Link from "next/link";
+import { Address } from "~~/components/scaffold-eth";
 import { Group } from "~~/types/app";
 
 const groupList: Group[] = [
@@ -28,8 +29,10 @@ const groupList: Group[] = [
 ];
 
 export default function GroupDetailPage() {
-  const friendsAddrs: string[] = ["1", "2", "3", "4"];
-  const [selectedFriendAddr, setSelectedFriendAddr] = useState<string | null>("1");
+  // const friendsAddrs: string[] = ["1", "2", "3", "4"];
+  const [selectedFriendAddr, setSelectedFriendAddr] = useState<string>("");
+  const [showAddFriends, setShowAddFriends] = useState(false);
+  const [showTotalsModal, setShowTotalsModal] = useState(false);
 
   return (
     <div className=" min-h-screen">
@@ -44,31 +47,67 @@ export default function GroupDetailPage() {
             <button className="btn btn-primary">Settle up</button>
           </Link>
 
-          <button className="btn btn-outline">Add Friends</button>
+          <button className="btn btn-outline" onClick={() => setShowAddFriends(!showAddFriends)}>
+            Add Friends
+          </button>
           <button className="btn btn-outline">Balances</button>
-          <button className="btn btn-outline">Totals</button>
+          <button className="btn btn-outline" onClick={() => setShowTotalsModal(true)}>
+            Group Members
+          </button>
         </div>
 
-        <label className="form-control w-full max-w-xs">
-          <div className="label">
-            <span className="label-text">Add Friends</span>
+        {showAddFriends && (
+          <div className="flex flex-row items-end gap-2 mt-4">
+            <label className="form-control flex-grow">
+              <div className="label">
+                <span className="label-text">Add Friends</span>
+              </div>
+              <input
+                type="text"
+                placeholder="Friend's Wallet Address"
+                value={selectedFriendAddr}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setSelectedFriendAddr(e.target.value)}
+                className="input input-bordered w-full"
+                required
+              />
+            </label>
+
+            <Link href="/add-expenses" className="flex-shrink-0">
+              <button className="btn btn-primary h-full">Save</button>
+            </Link>
           </div>
-          <select
-            className="select select-bordered w-full max-w-xs"
-            onChange={e => setSelectedFriendAddr(e.target.value)}
-          >
-            {selectedFriendAddr == null && (
-              <option disabled selected>
-                Choose a friend
-              </option>
-            )}
-            {friendsAddrs.map(friendAddr => (
-              <option key={friendAddr} value={friendAddr} selected={friendAddr == selectedFriendAddr}>
-                Friend {friendAddr}
-              </option>
-            ))}
-          </select>
-        </label>
+        )}
+
+        {showTotalsModal && (
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+            <div className="bg-white p-6 rounded-lg max-w-md w-full">
+              <div className="flex justify-between items-center mb-4">
+                <h3 className="text-xl font-bold">Group Members</h3>
+                <button className="btn btn-ghost btn-sm btn-circle" onClick={() => setShowTotalsModal(false)}>
+                  ✕
+                </button>
+              </div>
+              <div className="space-y-3">
+                <div className="flex space-x-4">
+                  <div>
+                    <span className="text-sm font-bold">Addresses:</span>
+                    <Address address="0x2efae341079CE80b3C664500Af59E1a9829eAf12" />
+                  </div>
+                  <div>
+                    <span className="text-sm font-bold pl-3">Names:</span>
+
+                    <div className="flex items-center flex-shrink-0">
+                      <div className="flex-shrink-0">
+                        <p className="text-base">Jesco M.</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+                <div className="flex flex-col space-y-3"></div>
+              </div>
+            </div>
+          </div>
+        )}
 
         {/* Expenses List */}
         <div className="mt-8">
