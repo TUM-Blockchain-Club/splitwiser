@@ -22,7 +22,7 @@ export default function CreateGroup() {
     try {
       return await writeYourContractAsync({
         functionName: "createGroup",
-        args: [groupName, [connectedAddress]],
+        args: [groupName, [], "0x808456652fdb597867f38412077A9182bf77359F"],
       });
     } catch (e) {
       console.error("Error setting greeting:", e);
