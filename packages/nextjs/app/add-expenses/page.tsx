@@ -5,9 +5,9 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
 const AddExpense = () => {
-  const searhchParam = useSearchParams();
+  const searchParams = useSearchParams();
   const groupsIds: string[] = [];
-  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(searhchParam.get("groupId"));
+  const [selectedGroupId, setSelectedGroupId] = useState<string | null>(searchParams.get("groupId"));
   const [amount, setAmount] = useState<number>(0);
 
   return (
