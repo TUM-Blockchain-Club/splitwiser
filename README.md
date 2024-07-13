@@ -1,8 +1,22 @@
-# SplitWiser - Reimagining Web3 Onboarding
+# Splitwiser - Improving the Bill Split
+
+## Background
  
-A holistic peer-to-peer app built on Base for the future of user-centric Web3.
+In real world scenario, most people like to buy product or service together 
+and choose to split the bill either uniformly or based on certain aspect. 
+In web2 space, we already have Splitwise, an application that have been 
+widely used in Germany. Several social platform, like WeChat and Line,
+also integrates such feature to their application, which also gained positive
+response from their users. Despite all of that, they face several shortcomings.
+
+Despite its rebustness, Splitwise does not automatically track the status
+of the shared bill. Users still have to manually input how much money they
+transferred to settle their debt. Due to this limitation, Splitwise's user
+adoption rate is very slow in other country. Bill splitting in 
+WeChat and Line are also limited to user friends
+
  
-Project Overview
+## Project Overview
  
 [Project Name] is a Web3 app designed to bridge the gap between traditional user experiences and the decentralized world. We prioritize simplicity, inclusivity, and real-world utility to empower users and foster a vibrant Web3 community.
  
