@@ -89,6 +89,14 @@ export const NETWORKS_EXTRA_DATA: Record<string, ChainAttributes> = {
 export function getBlockExplorerTxLink(chainId: number, txnHash: string) {
   const chainNames = Object.keys(chains);
 
+  // Override base sepolia block explorer
+  switch (chainId) {
+    case 84532:
+      return `https://base-sepolia.blockscout.com/tx/${txnHash}`;
+    case 8453:
+      return `https://base.blockscout.com/tx/${txnHash}`;
+  }
+
   const targetChainArr = chainNames.filter(chainName => {
     const wagmiChain = chains[chainName as keyof typeof chains];
     return wagmiChain.id === chainId;
