@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { cacheExchange, fetchExchange } from "@urql/core";
 import { createClient, gql } from "urql";
 import { addFriend } from "~~/services/friendService";
+import { ENSName } from "~~/types/app";
 
 const client = createClient({
   url: "https://gateway-arbitrum.network.thegraph.com/api/e1c1034a567ce7f50c6971ee5fcb5798/subgraphs/id/5XqPmWe6gjyrJtFn9cLy237i4cWw2j9HcUJEXsP5qGtH",
@@ -26,7 +27,7 @@ const DATA_QUERY = gql`
 const AddFriend = () => {
   const [address, setAddress] = useState<string>("");
   const [name, setName] = useState<string>("");
-  const [ens, setEns] = useState<string[]>([]);
+  const [ens, setEns] = useState<ENSName[]>([]);
   const [clicked, setClicked] = useState<boolean>(false);
   const router = useRouter();
 
