@@ -6,7 +6,6 @@ import { useRouter } from "next/navigation";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { HeartIcon, HomeIcon, PaperPlaneIcon } from "@radix-ui/react-icons";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
-import { Group } from "~~/types/app";
 
 export default function CreateGroup() {
   const [groupName, setGroupName] = useState("");
@@ -96,7 +95,7 @@ export default function CreateGroup() {
               key={label}
               onClick={e => {
                 e.preventDefault();
-                setGroupType(label as Group["type"]);
+                setGroupType(label);
               }}
               role={"button"}
               className={`btn btn-outline ${groupType === label ? "btn-active" : ""}`}
