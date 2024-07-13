@@ -1,4 +1,3 @@
-// import { Groups } from "./_components/";
 import CreateGroup from "./_components/Group";
 import type { NextPage } from "next";
 import { getMetadata } from "~~/utils/scaffold-eth/getMetadata";
@@ -9,11 +8,7 @@ export const metadata = getMetadata({
 });
 
 const Group: NextPage = () => {
-  return (
-    <>
-      <CreateGroup />
-    </>
-  );
+  return <CreateGroup />;
 };
 
 export default Group;
