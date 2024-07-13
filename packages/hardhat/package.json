@@ -53,6 +53,7 @@
     "@chainlink/contracts-ccip": "^1.4.0",
     "@openzeppelin/contracts": "^4.8.1",
     "@typechain/ethers-v6": "^0.5.1",
+    "@wagmi/cli": "^2.1.15",
     "dotenv": "^16.0.3",
     "envfile": "^6.18.0",
     "qrcode": "^1.5.1"
