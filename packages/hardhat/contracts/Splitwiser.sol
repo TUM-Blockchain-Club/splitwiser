@@ -1,6 +1,6 @@
 // SPDX-License-Identifier: GPL-3.0
 pragma solidity ^0.8.0;
-
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 contract Splitwiser {
     struct Debt {
         string name;
@@ -15,6 +15,7 @@ contract Splitwiser {
         address[] members;
         mapping(uint256 => Debt) debts; // A mapping from debtId to actual Debt
         uint256 nextDebtId;
+        address token;
     }
 
     // (Optimization) Data structure to keep track of what a person owe and
@@ -77,7 +78,7 @@ contract Splitwiser {
         return userGroups;
     }
 
-    function createGroup(string memory _name, address[] memory _members) external returns (uint256) {
+    function createGroup(string memory _name, address[] memory _members, address _token) external returns (uint256) {
         uint256 currentGroupId = nextGroupId;
         Group storage newGroup = groups[currentGroupId];
         nextGroupId = nextGroupId + 1;
@@ -89,6 +90,8 @@ contract Splitwiser {
         _addMember(currentGroupId, msg.sender);
 
         newGroup.nextDebtId = 1;
+        newGroup.token = _token;
+
         return currentGroupId;
     }
 
@@ -158,11 +161,16 @@ contract Splitwiser {
         return paymentsToDo[_person][_groupId];
     }
 
-    function payDebtsForGroup(uint256 _groupId) external {
-        //TODO USDC INTEGRATION
+    function payDebtsForGroup(uint256 _groupId) external payable {
+        int256 totalAmount = balances[msg.sender][_groupId];
+        require(totalAmount < 0, "You do not owe anything in this group");
+        IERC20 token = IERC20(groups[_groupId].token);
+        require(token.transferFrom(msg.sender, address(this), uint256(-totalAmount)), "Transfer failed");
         PaymentToDo[]memory ptd = paymentsToDo[msg.sender][_groupId];
+        balances[msg.sender][_groupId] = 0;
+
         for(uint32 i=0; i<ptd.length;i++) {
-            balances[msg.sender][_groupId] += int256(ptd[i].amount);
+            require(token.transfer(ptd[i].creditor, ptd[i].amount), "Transfer to recipient failed");
             balances[ptd[i].creditor][_groupId] -= int256(ptd[i].amount);
         }
     }
