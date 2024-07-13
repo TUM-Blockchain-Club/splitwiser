@@ -43,7 +43,11 @@ const AddExpense = () => {
           <div className="label">
             <span className="label-text">Group</span>
           </div>
-          <select className="select select-bordered w-full max-w-xs" onChange={e => setSelectedGroupId(e.target.value)}>
+          <select
+            required
+            className="select select-bordered w-full max-w-xs"
+            onChange={e => setSelectedGroupId(e.target.value)}
+          >
             {selectedGroupId == null && (
               <option disabled selected>
                 Choose a group
