@@ -4,7 +4,7 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 
-const AddExpenese = () => {
+const AddExpense = () => {
   const searhchParam = useSearchParams();
   const groupsIds: string[] = [];
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(searhchParam.get("groupId"));
@@ -62,4 +62,4 @@ const AddExpenese = () => {
   );
 };
 
-export default AddExpenese;
+export default AddExpense;
