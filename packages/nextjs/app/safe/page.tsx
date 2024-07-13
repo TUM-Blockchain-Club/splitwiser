@@ -244,13 +244,17 @@ const SafePage = () => {
         <h1 className="text-4xl font-bold">Functional Wallet</h1>
         <h2 className="text-2xl">Powered by Safe</h2>
         <p className="text-lg">
-          A Functional Wallet is a wallet that will be used for
-          background interaction between you and our smart contract
-          to alleviate the gas fees.
+          A Functional Wallet is a wallet that will be used for background interaction between you and our smart
+          contract to alleviate the gas fees.
         </p>
       </div>
 
-      {safeDeployed ? (<p className={"max-w-full truncate"}>Your functional wallet address: <br/>{safeAddress}</p>) : (
+      {safeDeployed ? (
+        <p className={"max-w-full truncate"}>
+          Your functional wallet address: <br />
+          {safeAddress}
+        </p>
+      ) : (
         <>
           {isConnected && isAuthenticated && network !== baseSepolia.id ? (
             <button
