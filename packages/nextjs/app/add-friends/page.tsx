@@ -12,29 +12,29 @@ const client = createClient({
   exchanges: [cacheExchange, fetchExchange],
 });
 
+const DATA_QUERY = gql`
+  query GetDomains($nameStartsWith: String!) {
+    domains(first: 3, orderBy: name, orderDirection: asc, where: { name_starts_with: $nameStartsWith }) {
+      id
+      name
+      labelName
+      labelhash
+    }
+  }
+`;
+
 const AddFriend = () => {
   const [address, setAddress] = useState<string>("");
   const [name, setName] = useState<string>("");
   const [ens, setEns] = useState<string[]>([]);
+  const [clicked, setClicked] = useState<boolean>(false);
   const router = useRouter();
 
   useEffect(() => {
     if (!address) return;
-    const DATA_QUERY = gql`{
-      domains(
-       first: 5,
-       orderBy: name,
-       orderDirection: asc,
-       where: { name_starts_with: ${address} }
-     ) {
-       id
-       name
-       labelName
-       labelhash
-     }
-   }`;
+
     client
-      .query(DATA_QUERY)
+      .query(DATA_QUERY, { nameStartsWith: address })
       .toPromise()
       .then(result => {
         if (result.error) {
@@ -74,16 +74,19 @@ const AddFriend = () => {
             value={address}
             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAddress(e.target.value)}
           />
-          {ens.map(ensName => (
-            <div
-              key={ensName}
-              onClick={() => {
-                setAddress(ensName);
-              }}
-            >
-              <p>{ensName}</p>
-            </div>
-          ))}
+          {clicked
+            ? null
+            : ens.map(ensName => (
+                <div
+                  key={ensName.labelName}
+                  onClick={() => {
+                    setAddress(ensName.name);
+                    setClicked(true);
+                  }}
+                >
+                  <p>{ensName.name}</p>
+                </div>
+              ))}
         </label>
 
         <label className="form-control w-full max-w-xs">
