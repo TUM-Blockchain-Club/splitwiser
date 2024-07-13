@@ -1,11 +1,11 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
-pragma solidity ^0.8.19;
+pragma solidity ^0.8.0;
 
 contract Splitwiser {
     struct Debt {
         string name;
-        address borrower;
-        address lender;
+        address debtor;
+        address creditor;
         uint256 amount;
         bool paid;
     }
@@ -17,16 +17,16 @@ contract Splitwiser {
     }
 
     struct PaymentToDo {
-        address lender;
+        address creditor;
         uint256 amount;
     }
 
     mapping(string => Group) public groups;
     mapping(address => string[]) public pendingGroups;
     mapping(address => mapping(string => int256)) public balances; // address => groupName => balance
-    mapping(address => mapping(string => PaymentToDo[])) public paymentstodo; // address => groupName => payments (lender + amt)
+    mapping(address => mapping(string => PaymentToDo[])) paymentstodo; // address => groupName => payments ( creditor + amt )
 
-    event DebtAdded(string indexed groupName, uint256 indexed debtId, address indexed borrower, address lender, uint256 amount, string name);
+    event DebtAdded(string indexed groupName, uint256 indexed debtId, address indexed debtor, address creditor, uint256 amount, string name);
 
     modifier onlyMember(string memory _groupName) {
         require(isMember(_groupName, msg.sender), "You are not a member of this group");
@@ -87,33 +87,33 @@ contract Splitwiser {
         }
     }
 
-    function addDebt(string memory _groupName, address _lender, uint256 _amount, string memory _name) external onlyMember(_groupName) {
-        require(_lender != msg.sender, "Cannot owe yourself");
+    function addDebt(string memory _groupName, address _creditor, uint256 _amount, string memory _name) external onlyMember(_groupName) {
+        require(_creditor != msg.sender, "Cannot owe yourself");
         require(_amount > 0, "Amount must be positive");
-        require(isMember(_groupName, _lender), "Lender must be a group member");
+        require(isMember(_groupName, _creditor), "Creditor must be a group member");
 
-        _addDebt(_groupName, msg.sender, _lender, _amount, _name);
+        _addDebt(_groupName, msg.sender, _creditor, _amount, _name);
     }
 
-    function _addDebt(string memory _groupName, address _borrower, address _lender, uint256 _amount, string memory _name) internal {
+    function _addDebt(string memory _groupName, address _debitor, address _creditor, uint256 _amount, string memory _name) internal {
         Group storage group = groups[_groupName];
         uint256 debtId = group.nextDebtId++;
-        group.debts[debtId] = Debt(_name, _borrower, _lender, _amount, false);
+        group.debts[debtId] = Debt(_name, _debitor, _creditor, _amount, false);
 
-        balances[_borrower][_groupName] -= int256(_amount);
-        balances[_lender][_groupName] += int256(_amount);
+        balances[_debitor][_groupName] -= int256(_amount);
+        balances[_creditor][_groupName] += int256(_amount);
 
-        emit DebtAdded(_groupName, debtId, _borrower, _lender, _amount, _name);
+        emit DebtAdded(_groupName, debtId, _debitor, _creditor, _amount, _name);
     }
 
-    function addExpense(string memory _groupName, address[] memory _lenders, uint256[] memory _amounts, string memory _name) external onlyMember(_groupName) {
-        require(_lenders.length == _amounts.length , "Lengths do not match");
-        for(uint32 i=0; i<_lenders.length; i++){
-            _addDebt(_groupName, msg.sender, _lenders[i], _amounts[i], _name);
+    function addExpense(string memory _groupName, address[] memory _creditors, uint256[] memory _amounts, string memory _name) external onlyMember(_groupName) {
+        require(_creditors.length == _amounts.length , "Lenghts do not match");
+        for(uint32 i=0; i<_creditors.length; i++){
+            _addDebt(_groupName, msg.sender, _creditors[i], _amounts[i], _name);
         }
     }
 
-    function findDebts(string memory _groupName, address _person) external onlyMember(_groupName) returns (PaymentToDo[] memory){
+    function findDebts(string memory _groupName, address _person) external view onlyMember(_groupName) returns (PaymentToDo[] memory){
         return paymentstodo[_person][_groupName];
     }
 
@@ -122,55 +122,56 @@ contract Splitwiser {
         PaymentToDo[]memory ptd = paymentstodo[msg.sender][_groupName];
         for(uint32 i=0; i<ptd.length;i++) {
             balances[msg.sender][_groupName] += int256(ptd[i].amount);
-            balances[ptd[i].lender][_groupName] -= int256(ptd[i].amount);
+            balances[ptd[i].creditor][_groupName] -= int256(ptd[i].amount);
         }
     }
 
-    function settleGroupDebts(string memory _groupName) external onlyMember(_groupName) {
+    function settleGroupDebts(string memory _groupName) payable external onlyMember(_groupName) {
         Group storage group = groups[_groupName];
         address[] memory members = group.members;
-        address[] memory borrowers = new address[](members.length);
-        address[] memory lenders = new address[](members.length);
-        uint256 borrowerCount = 0;
-        uint256 lenderCount = 0;
+        address[] memory debtors = new address[](members.length);
+        address[] memory creditors = new address[](members.length);
+        uint256 debtorCount = 0;
+        uint256 creditorCount = 0;
         mapping(address => mapping(string => int256)) storage balances_temp = balances;
 
-        // Separate borrowers and lenders
+        // Separate debtors and creditors
         for (uint256 i = 0; i < members.length; i++) {
             int256 balance = balances_temp[members[i]][_groupName];
             if (balance < 0) {
-                borrowers[borrowerCount++] = members[i];
+                debtors[debtorCount++] = members[i];
             } else if (balance > 0) {
-                lenders[lenderCount++] = members[i];
+                creditors[creditorCount++] = members[i];
             }
         }
 
-        sortAddresses(borrowers, borrowerCount, _groupName, true);
-        sortAddresses(lenders, lenderCount, _groupName, false);
+        sortAddresses(debtors, debtorCount, _groupName, true);
+        sortAddresses(creditors, creditorCount, _groupName, false);
 
-        uint256 borrowerIndex = 0;
-        uint256 lenderIndex = 0;
-        while (borrowerIndex < borrowerCount && lenderIndex < lenderCount) {
-            address borrower = borrowers[borrowerIndex];
-            address lender = lenders[lenderIndex];
-            uint256 amount = uint256(min(-int128(balances_temp[borrower][_groupName]), int128(balances_temp[lender][_groupName])));
+        uint256 debtorIndex = 0;
+        uint256 creditorIndex = 0;
+        while (debtorIndex < debtorCount && creditorIndex < creditorCount) {
+            address debtor = debtors[debtorIndex];
+            address creditor = creditors[creditorIndex];
+            uint256 amount = uint256(min(-int128(balances_temp[debtor][_groupName]), int128(balances_temp[creditor][_groupName])));
 
-            paymentstodo[borrower][_groupName].push(PaymentToDo(lender, amount));
+            paymentstodo[debtor][_groupName].push(PaymentToDo(creditor, amount));
 
-            balances_temp[borrower][_groupName] += int256(amount);
-            balances_temp[lender][_groupName] -= int256(amount);
+            balances_temp[debtor][_groupName] += int256(amount);
+            balances_temp[creditor][_groupName] -= int256(amount);
 
-            emit DebtSettled(_groupName, borrower, lender, amount);
+            emit DebtSettled(_groupName, debtor, creditor, amount);
 
-            if (balances_temp[borrower][_groupName] == 0) borrowerIndex++;
-            if (balances_temp[lender][_groupName] == 0) lenderIndex++;
+            if (balances_temp[debtor][_groupName] == 0) debtorIndex++;
+            if (balances_temp[creditor][_groupName] == 0) creditorIndex++;
+
         }
     }
 
-    function sortAddresses(address[] memory arr, uint256 count, string memory _groupName, bool isBorrowers) internal view {
+    function sortAddresses(address[] memory arr, uint256 count, string memory _groupName, bool isDebtors) internal view {
         for (uint256 i = 0; i < count - 1; i++) {
             for (uint256 j = 0; j < count - i - 1; j++) {
-                if (isBorrowers) {
+                if (isDebtors) {
                     if (balances[arr[j]][_groupName] > balances[arr[j + 1]][_groupName]) {
                         (arr[j], arr[j + 1]) = (arr[j + 1], arr[j]);
                     }
@@ -187,5 +188,5 @@ contract Splitwiser {
         return a < b ? a : b;
     }
 
-    event DebtSettled(string indexed groupName, address indexed borrower, address indexed lender, uint256 amount);
+    event DebtSettled(string indexed groupName, address indexed debtor, address indexed creditor, uint256 amount);
 }
