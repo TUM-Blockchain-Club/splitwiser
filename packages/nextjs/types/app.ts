@@ -8,3 +8,20 @@ export interface Group {
   name: string;
   type: string;
 }
+
+export interface GroupMember {
+  address: string;
+  groupId: string;
+}
+
+export interface GroupTransaction {
+  amount: number;
+  groupId: string;
+  id?: string;
+  title: string;
+}
+
+export interface Friend {
+  address: string;
+  name: string;
+}
