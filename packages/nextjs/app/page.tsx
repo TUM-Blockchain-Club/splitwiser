@@ -30,7 +30,9 @@ const Home: NextPage = () => {
               <Link href="/add-expenses" passHref>
                 <button className="btn btn-primary">Add an Expense</button>
               </Link>
-              <button className="btn btn-primary">Settle Up</button>
+              <Link href="/settle" passHref>
+                <button className="btn btn-primary">Settle Debts</button>
+              </Link>
             </div>
           )}
           {/* {primaryWallet && messageSignature && (
