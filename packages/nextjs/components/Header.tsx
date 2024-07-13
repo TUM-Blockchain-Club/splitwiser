@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { DynamicWidget } from "@dynamic-labs/sdk-react-core";
+import { HomeIcon } from "@radix-ui/react-icons";
 import { Bars3Icon, BugAntIcon, WalletIcon } from "@heroicons/react/24/outline";
 import { FaucetButton } from "~~/components/scaffold-eth";
 import { useOutsideClick } from "~~/hooks/scaffold-eth";
@@ -19,6 +20,7 @@ export const menuLinks: HeaderMenuLink[] = [
   {
     label: "Home",
     href: "/",
+    icon: <HomeIcon className="h-4 w-4" />,
   },
   {
     label: "Recent Activities",
