@@ -4,14 +4,35 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
+import { useReadContract } from "wagmi";
+import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
+import { Group } from "~~/types/app";
 
 const AddExpense = () => {
   const searchParams = useSearchParams();
-  const groupsIds: string[] = [];
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const [groups, setGroups] = useState<Group[]>([]);
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(searchParams.get("groupId"));
   const [customDistribution, setCustomDistribution] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0);
   const [customFields, setCustomFields] = useState<{ address: string; amount: number }[]>([]);
+
+  const { data } = useDeployedContractInfo("Splitwiser");
+
+  if (data == undefined) {
+    return <>Loading</>;
+  }
+
+  // eslint-disable-next-line react-hooks/rules-of-hooks
+  const groupIds = useReadContract({
+    abi: data.abi,
+    address: data.address,
+    functionName: "getUserGroups",
+  });
+
+  if (groupIds.isFetching) {
+    return <>Loading</>;
+  }
 
   const handleAddCustomField = () => {
     setCustomFields([...customFields, { address: "", amount: 0 }]);
@@ -53,11 +74,12 @@ const AddExpense = () => {
                 Choose a group
               </option>
             )}
-            {groupsIds.map(groupId => (
-              <option key={groupId} value={groupId} selected={groupId == selectedGroupId}>
-                groupId
-              </option>
-            ))}
+            {groups &&
+              groups.map((group, key) => (
+                <option key={key} value={key} selected={selectedGroupId != null && group.id == BigInt(selectedGroupId)}>
+                  groupId
+                </option>
+              ))}
           </select>
         </label>
 
