@@ -9,6 +9,7 @@ import { Toaster } from "react-hot-toast";
 import { WagmiProvider } from "wagmi";
 import { Footer } from "~~/components/Footer";
 import { Header } from "~~/components/Header";
+import SplitwiserNotification from "~~/components/SplitwiserNotification";
 import { ProgressBar } from "~~/components/scaffold-eth/ProgressBar";
 import { useInitializeNativeCurrencyPrice } from "~~/hooks/scaffold-eth";
 import { customEvmNetworks } from "~~/lib/networks";
@@ -75,7 +76,7 @@ export const ScaffoldEthAppWithProviders = ({ children }: { children: React.Reac
         <QueryClientProvider client={queryClient}>
           <DynamicWagmiConnector>
             <ProgressBar />
-
+            <SplitwiserNotification />
             <ScaffoldEthApp>{children}</ScaffoldEthApp>
           </DynamicWagmiConnector>
         </QueryClientProvider>
