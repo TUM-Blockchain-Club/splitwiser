@@ -11,21 +11,32 @@ contract Splitwiser {
     }
 
     struct Group {
+        string groupName;
         address[] members;
-        mapping(uint256 => Debt) debts;
+        mapping(uint256 => Debt) debts; // A mapping from debtId to actual Debt
         uint256 nextDebtId;
     }
 
+    // (Optimization) Data structure to keep track of what a person owe and
+    // in what group.
     struct PaymentToDo {
         address creditor;
         uint256 amount;
     }
 
-    mapping(string => Group) public groups;
-    mapping(address => string[]) public pendingGroups;
-    mapping(address => mapping(string => int256)) public balances; // address => groupName => balance
-    mapping(address => mapping(string => PaymentToDo[])) paymentstodo; // address => groupName => payments ( creditor + amt )
+    uint256 private nextGroupId = 1; // Keep track of the next groupId
+    mapping(uint256 => Group) public groups;
+    mapping(address => string[]) public pendingGroupInvites; // Database of pending user invitations to a group(s)
 
+    // (Pull-payment pattern) A mapping address => groupName => balance
+    // to keep track of user balance in smart contract
+    mapping(address => mapping(string => int256)) public balances;
+
+    // (Optimization) A mapping of address => groupName => payments ( creditor + amt )
+    // to keep track of what a person owe and in what group. Faster and cheaper than iterating all groups.
+    mapping(address => mapping(string => PaymentToDo[])) private paymentsToDo;
+
+    // Event to notify users if a new debt is added
     event DebtAdded(string indexed groupName, uint256 indexed debtId, address indexed debtor, address creditor, uint256 amount, string name);
 
     modifier onlyMember(string memory _groupName) {
@@ -34,19 +45,20 @@ contract Splitwiser {
     }
 
     function acceptInvite(string memory _groupName) public {
-        string[] storage groupss = pendingGroups[msg.sender];
-        require(groupss.length > 0, "No pending invites");
-        for(uint i = 0; i < groupss.length; i++) {
-            if(keccak256(abi.encode(groupss[i])) == keccak256(abi.encode((_groupName)))){
-                delete pendingGroups[msg.sender][i];
+        string[] storage invitations = pendingGroupInvites[msg.sender];
+        require(invitations.length > 0, "No pending invites");
+        for(uint i = 0; i < invitations.length; i++) {
+            if(keccak256(abi.encode(invitations[i])) == keccak256(abi.encode((_groupName)))){
+                delete pendingGroupInvites[msg.sender][i];
                 groups[_groupName].members.push(msg.sender);
             }
         }
     }
 
     function createGroup(string memory _name, address[] memory _members) external {
-        require(_members.length > 1, "Group must have at least 2 members");
-        Group storage newGroup = groups[_name];
+        Group storage newGroup = groups[nextGroupId];
+        nextGroupId = nextGroupId + 1;
+        newGroup.groupName = _name;
         newGroup.members = _members;
         newGroup.nextDebtId = 1;
     }
@@ -62,8 +74,8 @@ contract Splitwiser {
     }
 
     function isPending(string memory _groupName, address _member) internal view returns (bool) {
-        for(uint i = 0; i < pendingGroups[_member].length; i++) {
-            if (keccak256(bytes(pendingGroups[_member][i])) == keccak256(bytes(_groupName))) {
+        for(uint i = 0; i < pendingGroupInvites[_member].length; i++) {
+            if (keccak256(bytes(pendingGroupInvites[_member][i])) == keccak256(bytes(_groupName))) {
                 return true;
             }
         }
@@ -72,12 +84,12 @@ contract Splitwiser {
 
     function inviteMember(string memory _groupName, address _invited) public onlyMember(_groupName) {
         require(!isPending(_groupName, _invited) && !isMember(_groupName, _invited), "Member is already in (pending) group");
-        pendingGroups[_invited].push(_groupName);
+        pendingGroupInvites[_invited].push(_groupName);
     }
 
     function removeInvite(string memory _groupName, address _invited) public onlyMember(_groupName) {
         require(!isMember(_groupName, _invited), "Member is already in group");
-        string[] storage invites = pendingGroups[_invited];
+        string[] storage invites = pendingGroupInvites[_invited];
         for (uint i = 0; i < invites.length; i++) {
             if (keccak256(bytes(invites[i])) == keccak256(bytes(_groupName))) {
                 invites[i] = invites[invites.length - 1];
@@ -114,12 +126,12 @@ contract Splitwiser {
     }
 
     function findDebts(string memory _groupName, address _person) external view onlyMember(_groupName) returns (PaymentToDo[] memory){
-        return paymentstodo[_person][_groupName];
+        return paymentsToDo[_person][_groupName];
     }
 
     function payDebtsForGroup(string memory _groupName) external {
         //TODO USDC INTEGRATION
-        PaymentToDo[]memory ptd = paymentstodo[msg.sender][_groupName];
+        PaymentToDo[]memory ptd = paymentsToDo[msg.sender][_groupName];
         for(uint32 i=0; i<ptd.length;i++) {
             balances[msg.sender][_groupName] += int256(ptd[i].amount);
             balances[ptd[i].creditor][_groupName] -= int256(ptd[i].amount);
@@ -155,7 +167,7 @@ contract Splitwiser {
             address creditor = creditors[creditorIndex];
             uint256 amount = uint256(min(-int128(balances_temp[debtor][_groupName]), int128(balances_temp[creditor][_groupName])));
 
-            paymentstodo[debtor][_groupName].push(PaymentToDo(creditor, amount));
+            paymentsToDo[debtor][_groupName].push(PaymentToDo(creditor, amount));
 
             balances_temp[debtor][_groupName] += int256(amount);
             balances_temp[creditor][_groupName] -= int256(amount);
