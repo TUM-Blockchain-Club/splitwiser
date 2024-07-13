@@ -24,7 +24,7 @@ const Home: NextPage = () => {
           </div>
           {primaryWallet && (
             <div className="flex justify-center items-center space-x-2 space-y-2 flex-col sm:flex-row">
-              <Link href="/addgroup" passHref>
+              <Link href="/add-groups" passHref>
                 <button className="btn btn-primary">Start a Group</button>
               </Link>
               <Link href="/add-expenses" passHref>
@@ -32,6 +32,9 @@ const Home: NextPage = () => {
               </Link>
               <Link href="/settle" passHref>
                 <button className="btn btn-primary">Settle Debts</button>
+              </Link>
+              <Link href="/add-friends" passHref>
+                <button className="btn btn-primary">Add a Friend</button>
               </Link>
             </div>
           )}

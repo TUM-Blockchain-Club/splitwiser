@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 import { Group, addGroup } from "../../../services/groupService";
 import { HeartIcon, HomeIcon, PaperPlaneIcon } from "@radix-ui/react-icons";
 
+// import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
+
 interface CreateGroupProps {
   onGroupCreated?: (group: Group) => void;
 }
@@ -28,6 +30,19 @@ export default function CreateGroup({ onGroupCreated }: CreateGroupProps) {
       // You might want to show an error message to the user here
     }
   }
+
+  // const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("Splitwiser");
+
+  // async function createGroup(group: Omit<Group, "id">) {
+  //   try {
+  //     await writeYourContractAsync({
+  //       functionName: "createGroup",
+  //       args: ['Group 1', ['walletAddress1']],
+  //     });
+  //   } catch (e) {
+  //       console.error("Error setting greeting:", e);
+  //     }
+  // }
 
   return (
     <form onSubmit={handleSubmit} className="flex flex-col space-y-4 p-4 max-w-md mx-3">
