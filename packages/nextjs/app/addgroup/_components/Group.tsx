@@ -30,7 +30,7 @@ export default function CreateGroup({ onGroupCreated }: CreateGroupProps) {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col space-y-4 p-4 max-w-md mx-auto">
+    <form onSubmit={handleSubmit} className="flex flex-col space-y-4 p-4 max-w-md mx-3">
       <h1 className="text-3xl font-semibold">Create a group</h1>
 
       <div className="mb-6">
