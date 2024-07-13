@@ -8,9 +8,31 @@ export type ScaffoldConfig = {
   onlyLocalBurnerWallet: boolean;
 };
 
+const baseSepoliaWithBlockscout = {
+  ...chains.baseSepolia,
+  blockExplorers: {
+    default: {
+      name: "Blockscout",
+      url: "https://base-sepolia.blockscout.com",
+      apiUrl: "https://base-sepolia.blockscout.com/api",
+    },
+  },
+};
+
+const sepoliaWithBlockscout = {
+  ...chains.sepolia,
+  blockExplorers: {
+    default: {
+      name: "Blockscout",
+      url: "https://eth-sepolia.blockscout.com",
+      apiUrl: "https://eth-sepolia.blockscout.com/api",
+    },
+  },
+};
+
 const scaffoldConfig = {
   // The networks on which your DApp is live
-  targetNetworks: [chains.hardhat],
+  targetNetworks: [baseSepoliaWithBlockscout, sepoliaWithBlockscout, chains.hardhat],
 
   // The interval at which your front-end polls the RPC servers for new data
   // it has no effect if you only target the local network (default is 4000)
