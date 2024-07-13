@@ -55,12 +55,15 @@ contract Splitwiser {
         }
     }
 
-    function createGroup(string memory _name, address[] memory _members) external {
-        Group storage newGroup = groups[nextGroupId];
+    function createGroup(string memory _name, address[] memory _members) external returns (unit256) {
+        uint256 currentGroupId = nextGroupId;
+        Group storage newGroup = groups[currentGroupId];
         nextGroupId = nextGroupId + 1;
         newGroup.groupName = _name;
         newGroup.members = _members;
         newGroup.nextDebtId = 1;
+
+        return currentGroupId;
     }
 
     function isMember(string memory _groupName, address _member) internal view returns (bool) {
