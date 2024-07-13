@@ -94,7 +94,11 @@ export default function CreateGroup() {
           ].map(({ icon: Icon, label }) => (
             <button
               key={label}
-              onClick={() => setGroupType(label as Group["type"])}
+              onClick={e => {
+                e.preventDefault();
+                setGroupType(label as Group["type"]);
+              }}
+              role={"button"}
               className={`btn btn-outline ${groupType === label ? "btn-active" : ""}`}
             >
               <Icon size={16} />
