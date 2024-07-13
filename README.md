@@ -169,6 +169,7 @@ If your allowance is lower than the amount to transfer, you are asked to execute
 
 In the "Transactions" section, users can view all transactions executed by the Safe smart wallet within the session. The app integrates the [Blockscout API](https://docs.blockscout.com/for-users/api) to fetch and display transaction details, providing a transparent and user-friendly way to track activities.
 
+## The code is under the Open source licence: GPL-3.0-or-later
 
 ## Further Documentation
 - [Dynamic](https://docs.dynamic.xyz/)

@@ -6,6 +6,8 @@ import { Group, getGroupById } from "../../../services/groupService";
 export default function GroupDetailPage() {
   const router = useRouter();
   const { groupId } = router.query;
+  // Note: Why fetch the group in useEffect? Why not fetch when creating the page? Try to think of better way
+  // and prevent overcomplicating yourself
   const [group, setGroup] = useState<Group | null>(null);
   const [loading, setLoading] = useState(true);
 

@@ -3,12 +3,36 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
+import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
 
 const AddExpense = () => {
   const searchParams = useSearchParams();
   const groupsIds: string[] = [];
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(searchParams.get("groupId"));
+  const [customDistribution, setCustomDistribution] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0);
+  const [customFields, setCustomFields] = useState<{ address: string; amount: number }[]>([]);
+
+  const handleAddCustomField = () => {
+    setCustomFields([...customFields, { address: "", amount: 0 }]);
+  };
+
+  const handleRemoveCustomField = (index: number) => {
+    setCustomFields(customFields.filter((_, idx) => idx !== index));
+  };
+
+  const handleCustomFieldChange = (index: number, field: "address" | "amount", value: string | number) => {
+    const updatedFields = customFields.map((customField, idx) => {
+      if (idx === index) {
+        return {
+          ...customField,
+          [field]: value,
+        };
+      }
+      return customField;
+    });
+    setCustomFields(updatedFields);
+  };
 
   return (
     <>
@@ -37,7 +61,6 @@ const AddExpense = () => {
           <div className="label">
             <span className="label-text">Amount in EUR</span>
           </div>
-
           <input
             type="number"
             placeholder="Amount"
@@ -48,7 +71,53 @@ const AddExpense = () => {
           />
         </label>
 
-        <div className="flex flex-col justify-between items-center mb-6 space-x-2 space-y-2 pt-8">
+        <div className="form-control">
+          <label className="label cursor-pointer">
+            <span className="label-text">Custom Distribution</span>
+            <input
+              type="checkbox"
+              checked={customDistribution}
+              className="checkbox"
+              onChange={() => setCustomDistribution(!customDistribution)}
+            />
+          </label>
+        </div>
+
+        {customDistribution && (
+          <>
+            <h2 className={"text-xl font-semibold"}>Custom Distribution</h2>
+
+            {customFields.map((customField, index) => (
+              <div key={index} className="flex space-x-4">
+                <input
+                  type="text"
+                  placeholder="Address"
+                  value={customField.address}
+                  onChange={e => handleCustomFieldChange(index, "address", e.target.value)}
+                  className="input input-bordered w-full max-w-xs"
+                  required
+                />
+                <input
+                  type="number"
+                  placeholder="Amount"
+                  value={customField.amount}
+                  onChange={e => handleCustomFieldChange(index, "amount", parseFloat(e.target.value))}
+                  className="input input-bordered w-full max-w-xs"
+                  required
+                />
+                <button type="button" className="btn btn-error" onClick={() => handleRemoveCustomField(index)}>
+                  <MinusIcon />
+                </button>
+              </div>
+            ))}
+
+            <button className="btn btn-outline w-full" type="button" onClick={handleAddCustomField}>
+              <PlusIcon />
+            </button>
+          </>
+        )}
+
+        <div className="flex flex-col justify-between items-center mb-6 space-x-2 space-y-2 pt-4">
           <Link href="/" passHref className={"w-full"}>
             <button className="btn btn-error w-full">Cancel</button>
           </Link>

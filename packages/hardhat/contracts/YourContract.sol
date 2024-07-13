@@ -1,87 +1,191 @@
-//SPDX-License-Identifier: MIT
-pragma solidity >=0.8.0 <0.9.0;
+// SPDX-License-Identifier: GPL-3.0-or-later
+pragma solidity ^0.8.19;
 
-// Useful for debugging. Remove when deploying to a live network.
-import "hardhat/console.sol";
+contract Splitwiser {
+    struct Debt {
+        string name;
+        address borrower;
+        address lender;
+        uint256 amount;
+        bool paid;
+    }
 
-// Use openzeppelin to inherit battle-tested implementations (ERC20, ERC721, etc)
-// import "@openzeppelin/contracts/access/Ownable.sol";
+    struct Group {
+        address[] members;
+        mapping(uint256 => Debt) debts;
+        uint256 nextDebtId;
+    }
 
-/**
- * A smart contract that allows changing a state variable of the contract and tracking the changes
- * It also allows the owner to withdraw the Ether in the contract
- * @author BuidlGuidl
- */
-contract YourContract {
-	// State Variables
-	address public immutable owner;
-	string public greeting = "Building Unstoppable Apps!!!";
-	bool public premium = false;
-	uint256 public totalCounter = 0;
-	mapping(address => uint) public userGreetingCounter;
+    struct PaymentToDo {
+        address lender;
+        uint256 amount;
+    }
 
-	// Events: a way to emit log statements from smart contract that can be listened to by external parties
-	event GreetingChange(
-		address indexed greetingSetter,
-		string newGreeting,
-		bool premium,
-		uint256 value
-	);
+    mapping(string => Group) public groups;
+    mapping(address => string[]) public pendingGroups;
+    mapping(address => mapping(string => int256)) public balances; // address => groupName => balance
+    mapping(address => mapping(string => PaymentToDo[])) public paymentstodo; // address => groupName => payments (lender + amt)
 
-	// Constructor: Called once on contract deployment
-	// Check packages/hardhat/deploy/00_deploy_your_contract.ts
-	constructor(address _owner) {
-		owner = _owner;
-	}
+    event DebtAdded(string indexed groupName, uint256 indexed debtId, address indexed borrower, address lender, uint256 amount, string name);
 
-	// Modifier: used to define a set of rules that must be met before or after a function is executed
-	// Check the withdraw() function
-	modifier isOwner() {
-		// msg.sender: predefined variable that represents address of the account that called the current function
-		require(msg.sender == owner, "Not the Owner");
-		_;
-	}
+    modifier onlyMember(string memory _groupName) {
+        require(isMember(_groupName, msg.sender), "You are not a member of this group");
+        _;
+    }
 
-	/**
-	 * Function that allows anyone to change the state variable "greeting" of the contract and increase the counters
-	 *
-	 * @param _newGreeting (string memory) - new greeting to save on the contract
-	 */
-	function setGreeting(string memory _newGreeting) public payable {
-		// Print data to the hardhat chain console. Remove when deploying to a live network.
-		console.log(
-			"Setting new greeting '%s' from %s",
-			_newGreeting,
-			msg.sender
-		);
+    function acceptInvite(string memory _groupName) public {
+        string[] storage groupss = pendingGroups[msg.sender];
+        require(groupss.length > 0, "No pending invites");
+        for(uint i = 0; i < groupss.length; i++) {
+            if(keccak256(abi.encode(groupss[i])) == keccak256(abi.encode((_groupName)))){
+                delete pendingGroups[msg.sender][i];
+                groups[_groupName].members.push(msg.sender);
+            }
+        }
+    }
 
-		// Change state variables
-		greeting = _newGreeting;
-		totalCounter += 1;
-		userGreetingCounter[msg.sender] += 1;
+    function createGroup(string memory _name, address[] memory _members) external {
+        require(_members.length > 1, "Group must have at least 2 members");
+        Group storage newGroup = groups[_name];
+        newGroup.members = _members;
+        newGroup.nextDebtId = 1;
+    }
 
-		// msg.value: built-in global variable that represents the amount of ether sent with the transaction
-		if (msg.value > 0) {
-			premium = true;
-		} else {
-			premium = false;
-		}
+    function isMember(string memory _groupName, address _member) internal view returns (bool) {
+        address[] memory members = groups[_groupName].members;
+        for (uint i = 0; i < members.length; i++) {
+            if (members[i] == _member) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-		// emit: keyword used to trigger an event
-		emit GreetingChange(msg.sender, _newGreeting, msg.value > 0, msg.value);
-	}
+    function isPending(string memory _groupName, address _member) internal view returns (bool) {
+        for(uint i = 0; i < pendingGroups[_member].length; i++) {
+            if (keccak256(bytes(pendingGroups[_member][i])) == keccak256(bytes(_groupName))) {
+                return true;
+            }
+        }
+        return false;
+    }
 
-	/**
-	 * Function that allows the owner to withdraw all the Ether in the contract
-	 * The function can only be called by the owner of the contract as defined by the isOwner modifier
-	 */
-	function withdraw() public isOwner {
-		(bool success, ) = owner.call{ value: address(this).balance }("");
-		require(success, "Failed to send Ether");
-	}
+    function inviteMember(string memory _groupName, address _invited) public onlyMember(_groupName) {
+        require(!isPending(_groupName, _invited) && !isMember(_groupName, _invited), "Member is already in (pending) group");
+        pendingGroups[_invited].push(_groupName);
+    }
 
-	/**
-	 * Function that allows the contract to receive ETH
-	 */
-	receive() external payable {}
+    function removeInvite(string memory _groupName, address _invited) public onlyMember(_groupName) {
+        require(!isMember(_groupName, _invited), "Member is already in group");
+        string[] storage invites = pendingGroups[_invited];
+        for (uint i = 0; i < invites.length; i++) {
+            if (keccak256(bytes(invites[i])) == keccak256(bytes(_groupName))) {
+                invites[i] = invites[invites.length - 1];
+                invites.pop();
+                break;
+            }
+        }
+    }
+
+    function addDebt(string memory _groupName, address _lender, uint256 _amount, string memory _name) external onlyMember(_groupName) {
+        require(_lender != msg.sender, "Cannot owe yourself");
+        require(_amount > 0, "Amount must be positive");
+        require(isMember(_groupName, _lender), "Lender must be a group member");
+
+        _addDebt(_groupName, msg.sender, _lender, _amount, _name);
+    }
+
+    function _addDebt(string memory _groupName, address _borrower, address _lender, uint256 _amount, string memory _name) internal {
+        Group storage group = groups[_groupName];
+        uint256 debtId = group.nextDebtId++;
+        group.debts[debtId] = Debt(_name, _borrower, _lender, _amount, false);
+
+        balances[_borrower][_groupName] -= int256(_amount);
+        balances[_lender][_groupName] += int256(_amount);
+
+        emit DebtAdded(_groupName, debtId, _borrower, _lender, _amount, _name);
+    }
+
+    function addExpense(string memory _groupName, address[] memory _lenders, uint256[] memory _amounts, string memory _name) external onlyMember(_groupName) {
+        require(_lenders.length == _amounts.length , "Lengths do not match");
+        for(uint32 i=0; i<_lenders.length; i++){
+            _addDebt(_groupName, msg.sender, _lenders[i], _amounts[i], _name);
+        }
+    }
+
+    function findDebts(string memory _groupName, address _person) external onlyMember(_groupName) returns (PaymentToDo[] memory){
+        return paymentstodo[_person][_groupName];
+    }
+
+    function payDebtsForGroup(string memory _groupName) external {
+        //TODO USDC INTEGRATION
+        PaymentToDo[]memory ptd = paymentstodo[msg.sender][_groupName];
+        for(uint32 i=0; i<ptd.length;i++) {
+            balances[msg.sender][_groupName] += int256(ptd[i].amount);
+            balances[ptd[i].lender][_groupName] -= int256(ptd[i].amount);
+        }
+    }
+
+    function settleGroupDebts(string memory _groupName) external onlyMember(_groupName) {
+        Group storage group = groups[_groupName];
+        address[] memory members = group.members;
+        address[] memory borrowers = new address[](members.length);
+        address[] memory lenders = new address[](members.length);
+        uint256 borrowerCount = 0;
+        uint256 lenderCount = 0;
+        mapping(address => mapping(string => int256)) storage balances_temp = balances;
+
+        // Separate borrowers and lenders
+        for (uint256 i = 0; i < members.length; i++) {
+            int256 balance = balances_temp[members[i]][_groupName];
+            if (balance < 0) {
+                borrowers[borrowerCount++] = members[i];
+            } else if (balance > 0) {
+                lenders[lenderCount++] = members[i];
+            }
+        }
+
+        sortAddresses(borrowers, borrowerCount, _groupName, true);
+        sortAddresses(lenders, lenderCount, _groupName, false);
+
+        uint256 borrowerIndex = 0;
+        uint256 lenderIndex = 0;
+        while (borrowerIndex < borrowerCount && lenderIndex < lenderCount) {
+            address borrower = borrowers[borrowerIndex];
+            address lender = lenders[lenderIndex];
+            uint256 amount = uint256(min(-int128(balances_temp[borrower][_groupName]), int128(balances_temp[lender][_groupName])));
+
+            paymentstodo[borrower][_groupName].push(PaymentToDo(lender, amount));
+
+            balances_temp[borrower][_groupName] += int256(amount);
+            balances_temp[lender][_groupName] -= int256(amount);
+
+            emit DebtSettled(_groupName, borrower, lender, amount);
+
+            if (balances_temp[borrower][_groupName] == 0) borrowerIndex++;
+            if (balances_temp[lender][_groupName] == 0) lenderIndex++;
+        }
+    }
+
+    function sortAddresses(address[] memory arr, uint256 count, string memory _groupName, bool isBorrowers) internal view {
+        for (uint256 i = 0; i < count - 1; i++) {
+            for (uint256 j = 0; j < count - i - 1; j++) {
+                if (isBorrowers) {
+                    if (balances[arr[j]][_groupName] > balances[arr[j + 1]][_groupName]) {
+                        (arr[j], arr[j + 1]) = (arr[j + 1], arr[j]);
+                    }
+                } else {
+                    if (balances[arr[j]][_groupName] < balances[arr[j + 1]][_groupName]) {
+                        (arr[j], arr[j + 1]) = (arr[j + 1], arr[j]);
+                    }
+                }
+            }
+        }
+    }
+
+    function min(int256 a, int256 b) internal pure returns (int256) {
+        return a < b ? a : b;
+    }
+
+    event DebtSettled(string indexed groupName, address indexed borrower, address indexed lender, uint256 amount);
 }
