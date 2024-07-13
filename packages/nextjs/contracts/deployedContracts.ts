@@ -495,7 +495,7 @@ const deployedContracts = {
   },
   84532: {
     Splitwiser: {
-      address: "0xAc4c911247F38b5520cb1e5FDE5aF60d2A593482",
+      address: "0x347438cB8d47F8AEC3384feE1452A61e92bF8A9b",
       abi: [
         {
           anonymous: false,
@@ -719,6 +719,19 @@ const deployedContracts = {
               internalType: "struct Splitwiser.PaymentToDo[]",
               name: "",
               type: "tuple[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getUserGroups",
+          outputs: [
+            {
+              internalType: "uint256[]",
+              name: "",
+              type: "uint256[]",
             },
           ],
           stateMutability: "view",
