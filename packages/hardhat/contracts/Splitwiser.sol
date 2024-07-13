@@ -28,7 +28,7 @@ contract Splitwiser {
     mapping(uint256 => Group) public groups;
     mapping(address => uint256[]) public pendingGroupInvites; // Database of pending user invitations to a group(s)
 
-    // (Pull-payment pattern) A mapping address => groupId => balance
+    // (Optimization) A mapping address => groupId => balance
     // to keep track of user balance in smart contract
     mapping(address => mapping(uint256 => int256)) public balances;
 
@@ -50,9 +50,31 @@ contract Splitwiser {
         for(uint i = 0; i < invitations.length; i++) {
             if(invitations[i] == _groupId){
                 delete pendingGroupInvites[msg.sender][i];
-                groups[_groupId].members.push(msg.sender);
+                _addMember(_groupId, msg.sender);
             }
         }
+    }
+
+    function _addMember(uint256 _groupId, address _member) internal {
+        groups[_groupId].members.push(msg.sender);
+        balances[_member][_groupId] = 0;
+    }
+
+    function getUserGroups() external view returns (uint256[] memory) {
+        uint256 count = 0;
+        uint256[] memory tempGroups = new uint256[](nextGroupId - 1);
+        for (uint256 i = 1; i < nextGroupId; i++) {
+            if (isMember(i, msg.sender)) {
+                tempGroups[count++] = i;
+            }
+        }
+
+        uint256[] memory userGroups = new uint256[](count);
+        for (uint256 j = 0; j < count; j++) {
+            userGroups[j] = tempGroups[j];
+        }
+
+        return userGroups;
     }
 
     function createGroup(string memory _name, address[] memory _members) external returns (uint256) {
@@ -60,7 +82,12 @@ contract Splitwiser {
         Group storage newGroup = groups[currentGroupId];
         nextGroupId = nextGroupId + 1;
         newGroup.groupName = _name;
-        newGroup.members = _members;
+
+        for (uint i = 0; i < _members.length; i++) {
+            _addMember(currentGroupId, _members[i]);
+        }
+        _addMember(currentGroupId, msg.sender);
+
         newGroup.nextDebtId = 1;
         return currentGroupId;
     }
