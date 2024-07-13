@@ -110,7 +110,7 @@ export default function CreateGroup() {
               role={"button"}
               className={`btn btn-outline ${groupType === label ? "btn-active" : ""}`}
             >
-              <Icon size={16} />
+              <Icon fontSize={16} />
               <span>{label}</span>
             </button>
           ))}

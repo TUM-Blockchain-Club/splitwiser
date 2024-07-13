@@ -7,22 +7,22 @@ import { Group } from "~~/types/app";
 
 const groupList: Group[] = [
   {
-    id: "1",
+    id: BigInt(1),
     name: "Group 1",
     type: "Trip",
   },
   {
-    id: "2",
+    id: BigInt(2),
     name: "Group 2",
     type: "Home",
   },
   {
-    id: "3",
+    id: BigInt(3),
     name: "Group 3",
     type: "Couple",
   },
   {
-    id: "4",
+    id: BigInt(4),
     name: "Group 4",
     type: "Family",
   },

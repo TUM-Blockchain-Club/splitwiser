@@ -20,7 +20,7 @@ const DATA_QUERY = gql`
 `;
 
 const New = async () => {
-  const result = await client.query(DATA_QUERY).toPromise();
+  const result = await client.query(DATA_QUERY, {}).toPromise();
   if (result.error) {
     return <div>Error: {result.error.message}</div>;
   } else
