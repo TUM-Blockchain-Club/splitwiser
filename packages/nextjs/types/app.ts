@@ -3,10 +3,15 @@ export interface DebtInfo {
   groupId: string;
 }
 
+export interface GroupDebt {
+  amount: number;
+  address: string;
+}
+
 export interface Group {
-  id?: string;
+  id?: bigint;
   name: string;
-  type: string;
+  type?: string;
 }
 
 export interface GroupMember {
