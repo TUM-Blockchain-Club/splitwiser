@@ -22,6 +22,7 @@ export interface GroupTransaction {
 }
 
 export interface Friend {
+  id: string;
   address: string;
   name: string;
 }
