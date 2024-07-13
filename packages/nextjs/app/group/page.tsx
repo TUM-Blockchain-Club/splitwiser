@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useState } from "react";
 import Link from "next/link";
 import { Group } from "~~/types/app";
 
@@ -28,6 +28,9 @@ const groupList: Group[] = [
 ];
 
 export default function GroupDetailPage() {
+  const friendsAddrs: string[] = ["1", "2", "3", "4"];
+  const [selectedFriendAddr, setSelectedFriendAddr] = useState<string | null>("1");
+
   return (
     <div className=" min-h-screen">
       {/* Group Info */}
@@ -37,11 +40,35 @@ export default function GroupDetailPage() {
 
         {/* Action Buttons */}
         <div className="flex flex-wrap gap-2 mt-4">
-          <button className="btn btn-primary">Settle up</button>
-          <button className="btn btn-outline">Charts</button>
+          <Link href="/settle" passHref>
+            <button className="btn btn-primary">Settle up</button>
+          </Link>
+
+          <button className="btn btn-outline">Add Friends</button>
           <button className="btn btn-outline">Balances</button>
           <button className="btn btn-outline">Totals</button>
         </div>
+
+        <label className="form-control w-full max-w-xs">
+          <div className="label">
+            <span className="label-text">Add Friends</span>
+          </div>
+          <select
+            className="select select-bordered w-full max-w-xs"
+            onChange={e => setSelectedFriendAddr(e.target.value)}
+          >
+            {selectedFriendAddr == null && (
+              <option disabled selected>
+                Choose a friend
+              </option>
+            )}
+            {friendsAddrs.map(friendAddr => (
+              <option key={friendAddr} value={friendAddr} selected={friendAddr == selectedFriendAddr}>
+                Friend {friendAddr}
+              </option>
+            ))}
+          </select>
+        </label>
 
         {/* Expenses List */}
         <div className="mt-8">
@@ -79,6 +106,12 @@ export default function GroupDetailPage() {
                 </div>
               </div>
             </div>
+          </Link>
+        </div>
+
+        <div className="flex justify-center items-center space-x-2 space-y-2 flex-col sm:flex-row mt-8">
+          <Link href="/add-expenses" passHref>
+            <button className="btn btn-primary">Add an Expense</button>
           </Link>
         </div>
       </div>
