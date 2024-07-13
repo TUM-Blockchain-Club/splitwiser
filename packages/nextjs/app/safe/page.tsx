@@ -256,7 +256,7 @@ const SafePage = () => {
         </p>
       ) : (
         <>
-          {isConnected && isAuthenticated && network !== baseSepolia.id ? (
+          {isConnected && isAuthenticated && primaryWallet != null && network !== baseSepolia.id ? (
             <button
               className="btn btn-success"
               onClick={() => switchNetwork({ wallet: primaryWallet, network: baseSepolia.id })}

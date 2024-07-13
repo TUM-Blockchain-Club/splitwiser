@@ -4,7 +4,9 @@ import React, { useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useReadContract } from "wagmi";
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
 import { Group } from "~~/types/app";
 
@@ -16,23 +18,6 @@ const AddExpense = () => {
   const [customDistribution, setCustomDistribution] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0);
   const [customFields, setCustomFields] = useState<{ address: string; amount: number }[]>([]);
-
-  const { data } = useDeployedContractInfo("Splitwiser");
-
-  if (data == undefined) {
-    return <>Loading</>;
-  }
-
-  // eslint-disable-next-line react-hooks/rules-of-hooks
-  const groupIds = useReadContract({
-    abi: data.abi,
-    address: data.address,
-    functionName: "getUserGroups",
-  });
-
-  if (groupIds.isFetching) {
-    return <>Loading</>;
-  }
 
   const handleAddCustomField = () => {
     setCustomFields([...customFields, { address: "", amount: 0 }]);
