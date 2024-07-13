@@ -3,8 +3,10 @@
 import React, { useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { config } from "./config";
 import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { HeartIcon, HomeIcon, PaperPlaneIcon } from "@radix-ui/react-icons";
+import { getTransactionReceipt } from "@wagmi/core";
 import { useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 export default function CreateGroup() {
@@ -19,10 +21,22 @@ export default function CreateGroup() {
 
   async function createGroupOnChain(): Promise<any> {
     try {
-      return await writeYourContractAsync({
-        functionName: "createGroup",
-        args: [groupName, [], "0x808456652fdb597867f38412077A9182bf77359F"],
-      });
+      if (!connectedAddress) {
+        throw new Error("No wallet connected");
+      } else {
+        console.log("connectedAddress", connectedAddress);
+        const result = await writeYourContractAsync({
+          functionName: "createGroup",
+          args: [groupName, [connectedAddress], "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"],
+        });
+        if (!result) {
+          throw new Error("No result returned");
+        } else {
+          const trx = await getTransactionReceipt(config, { hash: result });
+          console.log("Transaction Content", trx.logs[0].topics[1]);
+          return trx.logs[0].topics[1];
+        }
+      }
     } catch (e) {
       console.error("Error setting greeting:", e);
     }
@@ -38,27 +52,23 @@ export default function CreateGroup() {
     try {
       // Create the group on-chain and get the transaction result
       const txResult = await createGroupOnChain();
+      console.log("txResult", txResult);
 
-      // Wait for the transaction to be mined and get the receipt
-      const receipt = await txResult.wait();
+      // // Wait for the transaction to be mined and get the receipt
+      // const receipt = await txResult.wait();
 
-      // Get the return value from the transaction receipt
-      // This assumes your contract emits the return value as the last topic in the event log
-      const onChainGroupId = receipt.logs[0].topics[receipt.logs[0].topics.length - 1];
-
-      // Convert the hex string to a decimal number
-      const groupIdDecimal = parseInt(onChainGroupId, 16);
+      const onChainGroupId = txResult;
 
       console.log("Group created on chain", txResult);
 
       const queryParams = new URLSearchParams({
         name: groupName,
         type: groupType,
-        onChainId: groupIdDecimal.toString(),
+        onChainId: onChainGroupId.toString(),
       }).toString();
 
       // Navigate to the new page
-      router.push(`/groups/${groupIdDecimal.toString()}?${queryParams}`);
+      router.push(`/groups/${onChainGroupId.toString()}?${queryParams}`);
     } catch (error) {
       console.error("Failed to create group", error);
       // You might want to show an error message to the user here
