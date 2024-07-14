@@ -89,12 +89,16 @@ export const NETWORKS_EXTRA_DATA: Record<string, ChainAttributes> = {
 export function getBlockExplorerTxLink(chainId: number, txnHash: string) {
   const chainNames = Object.keys(chains);
 
-  // Override base sepolia block explorer
+  // Override base and ethereum block explorer
   switch (chainId) {
     case 84532:
       return `https://base-sepolia.blockscout.com/tx/${txnHash}`;
     case 8453:
       return `https://base.blockscout.com/tx/${txnHash}`;
+    case 11155111:
+      return `https://eth-sepolia.blockscout.com/tx/${txnHash}`;
+    case 1:
+      return `https://eth.blockscout.com/tx/${txnHash}`;
   }
 
   const targetChainArr = chainNames.filter(chainName => {
