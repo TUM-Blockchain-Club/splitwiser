@@ -4,6 +4,8 @@
 
 **Have a look at our pitch deck: https://pitch.com/v/splitwiser-bsv9bw**
 
+**Have a look at the presentation video: https://www.youtube.com/watch?v=-nCnx27RPLQ**
+
 [<img src="./planning/product-images/homepage.jpeg" width="250"/>](image.png)
 
 # Table of Contents  
