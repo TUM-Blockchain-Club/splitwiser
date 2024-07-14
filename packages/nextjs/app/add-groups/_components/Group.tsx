@@ -17,6 +17,22 @@ export default function CreateGroup() {
   const { primaryWallet } = useDynamicContext();
   const connectedAddress = primaryWallet?.address;
 
+  let eurcSmartContractAddress = "0x808456652fdb597867f38412077A9182bf77359F"; // Default is EURC in Base Sepolia
+
+  if (primaryWallet !== null) {
+    switch (primaryWallet.network) {
+      case 84532:
+        eurcSmartContractAddress = "0x808456652fdb597867f38412077A9182bf77359F";
+        break;
+      case 1:
+        eurcSmartContractAddress = "0x1aBaEA1f7C830bD89Acc67eC4af516284b1bC33c";
+        break;
+      case 11155111:
+        eurcSmartContractAddress = "0x08210F9170F89Ab7658F0B5E3fF39b0E03C594D4";
+        break;
+    }
+  }
+
   const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("Splitwiser");
 
   async function createGroupOnChain(): Promise<any> {
@@ -27,7 +43,7 @@ export default function CreateGroup() {
         console.log("connectedAddress", connectedAddress);
         const result = await writeYourContractAsync({
           functionName: "createGroup",
-          args: [groupName, [connectedAddress], "0xA0b86991c6218b36c1d19D4a2e9Eb0cE3606eB48"],
+          args: [groupName, [connectedAddress], eurcSmartContractAddress],
         });
         if (!result) {
           throw new Error("No result returned");
