@@ -1,76 +1,73 @@
-# Splitwiser - Improving the Bill Split
+# Splitwiser - Split your bills with Web3 power and Web2 ease
+
+[<img src="./planning/product-images/homepage.jpeg" width="250"/>](image.png)
+
+# Table of Contents  
+- [Background](#background)  
+- [Splitwiser](#splitwiser-description)
+    - [Key Features](#key-features)
+    - [Used Tools](#used-tools)
+- [Development](#development)
+    - [Requirements](#equirements)
+    - [Quick Start](#quick-start)
+        - [Further Documentation on used tools](#further-documentation-on-used-tools)
+- [Gallery and Workflow](#gallery-and-workflow)
+- [Contacts](#contacts)
+- [License](#license)
+
 
 ## Background
  
-In real world scenario, most people like to buy product or service together 
-and choose to split the bill either uniformly or based on certain aspect. 
-In web2 space, we already have Splitwise, an application that have been 
-widely used in Germany. Several social platform, like WeChat and Line,
-also integrates such feature to their application, which also gained positive
-response from their users. Despite all of that, they face several shortcomings.
+In real world scenario, most people like to buy product or service together and choose to split the bill either uniformly or based on certain aspect. 
+In web2 space, there are already solutions like [Splitwise](https://www.splitwise.com/) and [Tricount](https://tricount.com/). Several social platform, like WeChat and Line, also integrates such feature to their application, which also gained positive
+response from their users. 
 
-Despite its rebustness, Splitwise does not automatically track the status
-of the shared bill. Users still have to manually input how much money they
-transferred to settle their debt. Due to this limitation, Splitwise's user
-adoption rate is very slow in other country. Bill splitting in 
-WeChat and Line are also limited to user friends
+Despite all of that, they face several shortcomings. Even with its rebustness, Splitwise or similar does not automatically track the status
+of the shared bill. Users still have to manually input how much money they transferred to settle their debt. Due to this limitation, Splitwise's user adoption rate is very slow in some countries. Additionally, applications like Splitwise have introduced their paid plans, which limit the number of groups and expenses you can track for free. Moreover, these applications are filled with annoying ads.
+ 
+## Splitwiser description
+ 
+ Splitwiser a solution to tackle peer-to-peer bill-tracking issues in traditional applications. By leveraging the power of web3 while maintaining the familiar workflows of web2, Splitwiser aims to onboard a new generation of users seamlessly. The smart contracts managing these actions are currently deployed on Ethereum and Base chains but are designed to be cross-chain, with plans to support more in the future. Respecting the transparent nature of web3, we are verifying our smart contracts on the Blockscout Explorer. The native currency is EURC by Circle, with more cryptocurrencies to be supported without additional conversion costs.
 
- 
-## Project Overview
- 
-[Project Name] is a Web3 app designed to bridge the gap between traditional user experiences and the decentralized world. We prioritize simplicity, inclusivity, and real-world utility to empower users and foster a vibrant Web3 community.
- 
-## Key Features:
- 
-Gasless Transactions: Utilizing [specific gasless solution, e.g., Layer-2 network, rollup], we eliminate the financial barrier to entry, making Web3 accessible to everyone.
- 
-Cross-Chain Compatibility: Built on Base, our app is designed to seamlessly integrate with other blockchains, fostering interoperability and user choice.
- 
-Intuitive User Interface: We leverage best practices in design and UX to create a seamless and enjoyable experience for all users.
- 
-Integrated payments: Instead of relying on 3 parties and  manualy you can utilis the acount id for direct payments.
+In Splitwiser, users can authenticate with both web2 and web3 methods. Once authenticated using the Dynamic system, users can create a new group (e.g., for an event) and add other participants. To simplify adding users, Splitwiser allows direct adding via wallet address and leverages The Graph queries and ENS for easy friend searches. After forming the group, its members can add expenses until the trip ends or when they need to settle the bill. Our debt simplification algorithm minimizes the number of transactions required by recursively matching the biggest debtors and creditors. 
 
-Integrated currency Conversion:  
-Free alternative: to a web2 solution with a Web 3 backend twist.
+All the interactions with the smart contract until the actual debt settlement are free for the users because of the Safe Smart Wallet feature. This feature sets Splitwiser apart from current web2 solutions, as it allows for infinite groups, members, and expenses without any charges, thanks to gas sponsorship by the application. The modern and familiar interface ensures that even common users can use our application without encountering any web3 complexity.
+
+Splitwiser introduces direct on-chain payments within the app to finalize settlements. The smart contract handles the deposits and withdrawals, so users either need to supply their sum debt into the smart contract or wait until the smart contract pays out the promised debt.
+
+Splitwiser's goal is not just to replicate a web2 app on-chain but to demonstrate how a proper UI/UX, account abstraction, gas fee subsidy, and other tools can create applications that leverage web3's potential while maintaining the ease of use of web2 apps. The Splitwiser team, former active users of the Splitwise web2 application, is now switching to their solution. They aim for this project to be widely used, not just another hackathon project.
  
-# Addressing the Hackathon Challenges
+### Key Features
+
+**Integrated payments:** Aftet debt is calculated, the debtors have to transfer the debt into smart contracts which will then automatically redistribute the money to creditors.
+
+**Barrier-free login:**  The app supports common web2 logins such as email and Google SSO as well as wallet login
  
-## Base 2k: Best Consumer UX
+**Gasless Transactions:** Utilizing Safe smart wallets, we shift responsibility of gas fee payment to developer and, so, eliminate the financial barrier to entry, making Web3 accessible to everyone.
  
-We prioritize user experience through:
+**Cross-Chain Compatibility**: Built on Base, our app is designed to seamlessly integrate with other blockchains, fostering interoperability and user choice.
  
-Clean and intuitive design: Our app interface is built with simplicity and user-friendliness in mind.
- 
-Guided onboarding: New users are seamlessly guided through the initial setup process.
- 
-Contextual help and support: Integrated documentation and support tools ensure users can easily find answers to their questions.
- 
- 
-We're grateful to Scaffold Eth for providing the tools and resources that helped us achieve this focus on user experience.
- 
-## Circle 4k: Emerging Use Case
- 
-[Project Name] introduces a novel use case for Web3: [Clearly explain your emerging use case and its impact]. This innovative application leverages the power of blockchain technology to create [positive outcome or value proposition]. We're excited to explore this potential with Circle's support.
- 
-## Dynamics SocialFi 2k:
- 
-We integrate social features to foster a vibrant community within our app:
- 
-We encurage social intracions to hppen on chain. By creating an easier trip with your web3 andn non web 2.0 friend.
- 
-The Dynamics SocialFi framework has been instrumental in helping us implement these features and create a truly social Web3 experience.
- 
-## ENS Best Use Case:
- 
-We utilize ENS names to enhance user experience:
- 
-Personalized Identifiers: Users can search for their friends ENS names and verfy with the profil image the right wallet adress.
-We Upgrade our user interface by desipalying their name s
-Simplified Interactions: ENS names make it easier to connect and interact with other users, eliminating the need to memorize complex wallet addresses.
- 
- 
-### Special Thanks to Circle, Scaffold Eth, and Dynamics for their support.
- 
+**Intuitive User Interface:** We leverage best practices in design and UX to create a seamless and enjoyable experience for all users.
+
+### Used Tools
+
+**Backend and Frontend:** [Scaffold-ETH 2](https://scaffoldeth.io/) (NextJs14 and Hardhat)
+
+**Smart contracts:** [Solidity](https://soliditylang.org/)
+
+**Login:** [Dynamic](https://www.dynamic.xyz/)
+
+**Sponsored transactions & wallets:** [Safe smart wallets](https://safe.global/)
+
+**Usernames:** [ENS](https://ens.domains/)
+
+**User search:** [The Graph](https://thegraph.com/) with ENS
+
+**Chains deployed:** Sepolia Ethereum and Sepolia [Base](https://www.base.org/)
+
+**Native currency:** [EURC](https://www.circle.com/en/eurc)
+
+# Development 
 ## Requirements
 
 Before you begin, you need to install the following tools:
@@ -121,74 +118,52 @@ yarn start
 
 Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
 
+For more detailed information on features and possibilities of Scaffold-ETH 2 please refer to [Scaffold-ETH 2 READMDE](./READ-scaffold.md).
 
-## Features Overview
-
-⚙️ Built using NextJS, Dynamic, Hardhat, Wagmi, Viem, and Typescript.
-
-- ✅ **Contract Hot Reload**: Your frontend auto-adapts to your smart contract as you edit it.
-- 🪝 **[Custom hooks](https://docs.scaffoldeth.io/hooks/)**: Collection of React hooks wrapper around [wagmi](https://wagmi.sh/) to simplify interactions with smart contracts with typescript autocompletion.
-- 🧱 [**Components**](https://docs.scaffoldeth.io/components/): Collection of common web3 components to quickly build your frontend.
-- 🔥 **Burner Wallet & Local Faucet**: Quickly test your application with a burner wallet and local faucet.
-
-![Debug Contracts tab](https://github.com/scaffold-eth/scaffold-eth-2/assets/55535804/b237af0c-5027-4849-a5c1-2e31495cccb1)
-
-- 🤝 **Dynamic onboarding**: Provides an interactive and responsive widget for interacting with your embedded wallet. You can create your embedded wallet using social logins or connecting an existing wallet.
-- 🔥 **Safe Smart Wallet**: Provides the most battle-tested ERC-4337 compatible smart wallet, improving users' UX.
-- 📱 **Permissionless.js (Pimlico) for gasless transactions**: Facilitates transactions without requiring users to pay gas fees. Pimlico is the world's most popular ERC-4337 account abstraction infrastructure platform.
-- ⛓ **Chainlink CCIP for cross-chain transactions**: Enables seamless transfers across different blockchain networks.
-- 🔗 **Blockscout for checking transactions**: Allows users to track and verify their transactions.
-
-### Chains & Networks
-Out of the box with the Dynamic implementation you get:
-
-- Base
-- Arbitrum
-- Polygon
-- Scroll
-- Zircuit
-- Rootstock
-- ZERϴ
-- Morph
-
-You can add many more via [the dashboard](https://app.dynamic.xyz/dashboard/chains-and-networks), or using [custom EVM Networks](https://docs.dynamic.xyz/chains/evmNetwork)!
-
-*This means you can instantly plug in any local chain you have running, like from Arbitrum Orbit, Polygon CDK etc!*
-
-### Safe Smart Wallet and Permissionless.js (Pimlico)
-
-Navigate to the "Smart Wallet" section and click on "Deploy Safe Account".
-This action calls the `createSmartAccountClient` function from Permissionless.js. More details can be found [here](https://docs.pimlico.io/permissionless/how-to/signers/privy#create-the-smartaccountclient).
-The Safe address is calculated deterministically based on your Dynamic embedded wallet address.
-The actual deployment of the Safe wallet occurs when you initiate your first transaction, such as a transfer.
-
-#### Executing a Transfer:
-You can perform a transfer of ERC-20 tokens in a gasless way. The app uses `smartAccountClient.writeContract` from Permissionless.js ([source](https://docs.pimlico.io/permissionless/reference/smart-account-actions/writeContract)). This allows for gasless transfers, sponsored by the Pimlico Paymaster on testnets.
-ERC-20 transfers are supported on any chain supported by Pimlico. Refer to the supported chains documentation [here](https://docs.pimlico.io/infra/bundler/bundler-errors/chain-not-supported#adding-new-chains).
-
-### Chainlink CCIP for Cross-Chain Transactions
-
-A custom Chainlink CCIP cross-chain transfer smart contract has been deployed, allowing for USDC (only!) transfers.
-The contract has ETH on Base Sepolia to cover CCIP fees.
-Contract address: `0x480A24B3F71f8704066211e61CF6CCE430B8a5c7`. You can find it in the `constants.ts` file of the project.
-Check the contract code: you can find the code in `/hardhat/contracts/CCIPTransfer.sol`.
-Check the contract ABI: you can find the contract ABI in `/nextjs/lib/ABI`.
-The reference of the contract is this Chainlink CCIP contract example ([source](https://docs.chain.link/ccip/tutorials/cross-chain-tokens)).
-
-The app uses `smartAccountClient.writeContract` ([source](https://docs.pimlico.io/permissionless/reference/smart-account-actions/writeContract)) of Permissionless.js to ensure gasless cross-chain transactions.
-The implementation is flexible, allowing for easy extension to support additional chains or rewriting the contract.
-If your allowance is lower than the amount to transfer, you are asked to execute an approve too.
-
-### Blockscout for Checking Transactions
-
-In the "Transactions" section, users can view all transactions executed by the Safe smart wallet within the session. The app integrates the [Blockscout API](https://docs.blockscout.com/for-users/api) to fetch and display transaction details, providing a transparent and user-friendly way to track activities.
-
-## The code is under the Open source licence: GPL-3.0-or-later
-
-## Further Documentation
+### Further Documentation on used tools
 - [Dynamic](https://docs.dynamic.xyz/)
 - [Original Scaffold Eth 2](https://scaffold-eth-2-docs.vercel.app/)
 - [Pimlico](https://docs.pimlico.io/)
 - [Safe](https://docs.safe.global/)
 - [Chainlink](https://docs.chain.link/)
 - [Blockscout](https://docs.blockscout.com/for-users/api/rpc-endpoints)
+
+## Gallery and Workflow
+Lets go through the workflow one by one with some images for easier understanding:
+
+### 1. Login to the APP
+
+[<img src="./planning/product-images/login.jpg" width="250"/>](image.png)
+[<img src="./planning/product-images/homepage.jpeg" width="250"/>](image.png)
+
+### 2. Create a new group for an event/trip
+
+[<img src="./planning/product-images/group-creation.jpeg" width="250"/>](image.png)
+[<img src="./planning/product-images/group-created.jpeg" width="250"/>](image.png)
+
+### 3. Add friend to a group
+[<img src="./planning/product-images/ens-searching.jpeg" width="250"/>](image.png)
+
+### 4. Add expenses
+[<img src="./planning/product-images/expense-adding.jpeg" width="250"/>](image.png)
+
+### 4. Settle debts
+[<img src="./planning/product-images/debts-settling.jpeg" width="250"/>](image.png)
+
+
+## Contacts
+**Team:**
+- @LUOJIUzxy
+- @itsmeyaw
+- @tsatsch
+- @jescom9
+- @dragoscodes
+
+With Love from TUM Blockchain Club
+
+## License
+The code is under the Open source licence: GPL-3.0-or-later
+
+**Built with ❤ by**
+
+[<img src="./planning/tbc-logo.png" width="150"/>](image.png)
