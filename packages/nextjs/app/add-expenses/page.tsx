@@ -1,19 +1,18 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useReadContract } from "wagmi";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useDeployedContractInfo } from "~~/hooks/scaffold-eth";
-import { Group } from "~~/types/app";
+import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
 
 const AddExpense = () => {
   const searchParams = useSearchParams();
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [groups, setGroups] = useState<Group[]>([]);
+  const [groups, setGroups] = useState<string[]>([]);
+  const [queryGroupId, setQueryGroupId] = useState<bigint>(BigInt(1));
   const [selectedGroupId, setSelectedGroupId] = useState<string | null>(searchParams.get("groupId"));
   const [customDistribution, setCustomDistribution] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0);
@@ -40,6 +39,38 @@ const AddExpense = () => {
     setCustomFields(updatedFields);
   };
 
+  const { data: allGroups } = useScaffoldReadContract({
+    contractName: "Splitwiser",
+    functionName: "getUserGroups",
+    args: undefined,
+  });
+
+  const { data: groupName } = useScaffoldReadContract({
+    contractName: "Splitwiser",
+    functionName: "getGroupName",
+    args: [queryGroupId],
+  });
+
+  useEffect(() => {
+    console.log(groupName);
+    if (allGroups) {
+      console.log("allGroups", allGroups);
+      const newGroupIds = allGroups.map(groupId => groupId.toString());
+
+      console.log("newGroupIds", newGroupIds);
+
+      const GroupIds = [BigInt(1), BigInt(2), BigInt(3), BigInt(4)];
+      const groupNames: string[] = [];
+      GroupIds.map(groupID => {
+        setQueryGroupId(groupID);
+        if (groupName) {
+          groupNames.push(groupName);
+        }
+      });
+      setGroups(groupNames);
+    }
+  }, [allGroups, groupName]);
+
   return (
     <>
       <form className="flex flex-col space-y-4 p-4 max-w-md mx-3">
@@ -52,20 +83,23 @@ const AddExpense = () => {
           <select
             required
             className="select select-bordered w-full max-w-xs"
+            value={selectedGroupId || ""}
             onChange={e => setSelectedGroupId(e.target.value)}
           >
-            {selectedGroupId == null && (
-              <option disabled selected>
-                Choose a group
+            <option value="" disabled>
+              Choose a group
+            </option>
+            {groups.map(groupId => (
+              <option key={groupId} value={groupId}>
+                Group {groupId}
               </option>
-            )}
-            {groups &&
-              groups.map((group, key) => (
-                <option key={key} value={key} selected={selectedGroupId != null && group.id == BigInt(selectedGroupId)}>
-                  groupId
-                </option>
-              ))}
+            ))}
           </select>
+          {selectedGroupId && (
+            <div className="label">
+              <span className="label-text-alt">You selected group: {selectedGroupId}</span>
+            </div>
+          )}
         </label>
 
         <label className="form-control w-full max-w-xs">
