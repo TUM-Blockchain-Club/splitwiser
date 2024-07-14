@@ -1038,7 +1038,7 @@ const deployedContracts = {
   },
   11155111: {
     Splitwiser: {
-      address: "0x6Ce28A0238f34D103eCB4AE5e54b0fe648E55E53",
+      address: "0xAc4c911247F38b5520cb1e5FDE5aF60d2A593482",
       abi: [
         {
           anonymous: false,
@@ -1112,6 +1112,25 @@ const deployedContracts = {
             },
           ],
           name: "DebtSettled",
+          type: "event",
+        },
+        {
+          anonymous: false,
+          inputs: [
+            {
+              indexed: true,
+              internalType: "uint256",
+              name: "groupId",
+              type: "uint256",
+            },
+            {
+              indexed: false,
+              internalType: "address",
+              name: "creator",
+              type: "address",
+            },
+          ],
+          name: "GroupCreated",
           type: "event",
         },
         {
@@ -1219,15 +1238,14 @@ const deployedContracts = {
               name: "_members",
               type: "address[]",
             },
-          ],
-          name: "createGroup",
-          outputs: [
             {
-              internalType: "uint256",
-              name: "",
-              type: "uint256",
+              internalType: "address",
+              name: "_token",
+              type: "address",
             },
           ],
+          name: "createGroup",
+          outputs: [],
           stateMutability: "nonpayable",
           type: "function",
         },
@@ -1271,6 +1289,38 @@ const deployedContracts = {
           inputs: [
             {
               internalType: "uint256",
+              name: "_groupId",
+              type: "uint256",
+            },
+          ],
+          name: "getGroupName",
+          outputs: [
+            {
+              internalType: "string",
+              name: "",
+              type: "string",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [],
+          name: "getUserGroups",
+          outputs: [
+            {
+              internalType: "uint256[]",
+              name: "",
+              type: "uint256[]",
+            },
+          ],
+          stateMutability: "view",
+          type: "function",
+        },
+        {
+          inputs: [
+            {
+              internalType: "uint256",
               name: "",
               type: "uint256",
             },
@@ -1286,6 +1336,11 @@ const deployedContracts = {
               internalType: "uint256",
               name: "nextDebtId",
               type: "uint256",
+            },
+            {
+              internalType: "address",
+              name: "token",
+              type: "address",
             },
           ],
           stateMutability: "view",
@@ -1319,7 +1374,7 @@ const deployedContracts = {
           ],
           name: "payDebtsForGroup",
           outputs: [],
-          stateMutability: "nonpayable",
+          stateMutability: "payable",
           type: "function",
         },
         {
