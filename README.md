@@ -1,5 +1,7 @@
 # Splitwiser - Split your bills with Web3 power and Web2 ease
 
+**Be one of the first users of Splitwiser. Happy to hear your feedback! https://splitwiser-phi.vercel.app/**
+
 [<img src="./planning/product-images/homepage.jpeg" width="250"/>](image.png)
 
 # Table of Contents  
