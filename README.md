@@ -1,5 +1,11 @@
 # Splitwiser - Split your bills with Web3 power and Web2 ease
 
+**Be one of the first users of Splitwiser. Happy to hear your feedback! https://splitwiser-phi.vercel.app/**
+
+**Have a look at our pitch deck: https://pitch.com/v/splitwiser-bsv9bw**
+
+**Have a look at the presentation video: https://www.youtube.com/watch?v=-nCnx27RPLQ**
+
 [<img src="./planning/product-images/homepage.jpeg" width="250"/>](image.png)
 
 # Table of Contents  
@@ -68,6 +74,11 @@ Splitwiser's goal is not just to replicate a web2 app on-chain but to demonstrat
 **Native currency:** [EURC](https://www.circle.com/en/eurc)
 
 # Development 
+
+Deployed Smart Contracts on
+- Ethereum Sepolia: [0xAc4c911247F38b5520cb1e5FDE5aF60d2A593482](https://eth-sepolia.blockscout.com/address/0xAc4c911247F38b5520cb1e5FDE5aF60d2A593482)
+- Base Sepolia: [0xfbd0E05993B19523a4C823EdA80C897999654110](https://base-sepolia.blockscout.com/address/0xfbd0E05993B19523a4C823EdA80C897999654110)
+
 ## Requirements
 
 Before you begin, you need to install the following tools:
