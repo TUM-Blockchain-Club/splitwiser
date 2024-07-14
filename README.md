@@ -161,9 +161,6 @@ Lets go through the workflow one by one with some images for easier understandin
 
 With Love from TUM Blockchain Club
 
-## License
-The code is under the Open source licence: GPL-3.0-or-later
-
 **Built with ❤ by**
 
 [<img src="./planning/tbc-logo.png" width="150"/>](image.png)
