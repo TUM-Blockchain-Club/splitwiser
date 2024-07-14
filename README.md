@@ -2,6 +2,8 @@
 
 **Be one of the first users of Splitwiser. Happy to hear your feedback! https://splitwiser-phi.vercel.app/**
 
+**Have a look at our pitch deck: https://pitch.com/v/splitwiser-bsv9bw**
+
 [<img src="./planning/product-images/homepage.jpeg" width="250"/>](image.png)
 
 # Table of Contents  
