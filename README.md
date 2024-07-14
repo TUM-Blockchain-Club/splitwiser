@@ -68,6 +68,11 @@ Splitwiser's goal is not just to replicate a web2 app on-chain but to demonstrat
 **Native currency:** [EURC](https://www.circle.com/en/eurc)
 
 # Development 
+
+Deployed Smart Contracts on
+- Ethereum Sepolia: [0xAc4c911247F38b5520cb1e5FDE5aF60d2A593482](https://eth-sepolia.blockscout.com/address/0xAc4c911247F38b5520cb1e5FDE5aF60d2A593482)
+- Base Sepolia: [0xfbd0E05993B19523a4C823EdA80C897999654110](https://base-sepolia.blockscout.com/address/0xfbd0E05993B19523a4C823EdA80C897999654110)
+
 ## Requirements
 
 Before you begin, you need to install the following tools:
