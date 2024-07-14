@@ -25,9 +25,9 @@ response from their users.
 Despite all of that, they face several shortcomings. Even with its rebustness, Splitwise or similar does not automatically track the status
 of the shared bill. Users still have to manually input how much money they transferred to settle their debt. Due to this limitation, Splitwise's user adoption rate is very slow in some countries. Additionally, applications like Splitwise have introduced their paid plans, which limit the number of groups and expenses you can track for free. Moreover, these applications are filled with annoying ads.
  
-## Splitwiser description
+## Description
  
- Splitwiser a solution to tackle peer-to-peer bill-tracking issues in traditional applications. By leveraging the power of web3 while maintaining the familiar workflows of web2, Splitwiser aims to onboard a new generation of users seamlessly. The smart contracts managing these actions are currently deployed on Ethereum and Base chains but are designed to be cross-chain, with plans to support more in the future. Respecting the transparent nature of web3, we are verifying our smart contracts on the Blockscout Explorer. The native currency is EURC by Circle, with more cryptocurrencies to be supported without additional conversion costs.
+Splitwiser a solution to tackle peer-to-peer bill-tracking issues in traditional applications. By leveraging the power of web3 while maintaining the familiar workflows of web2, Splitwiser aims to onboard a new generation of users seamlessly. The smart contracts managing these actions are currently deployed on Ethereum and Base chains but are designed to be cross-chain, with plans to support more in the future. Respecting the transparent nature of web3, we are verifying our smart contracts on the Blockscout Explorer. The native currency is EURC by Circle, with more cryptocurrencies to be supported without additional conversion costs.
 
 In Splitwiser, users can authenticate with both web2 and web3 methods. Once authenticated using the Dynamic system, users can create a new group (e.g., for an event) and add other participants. To simplify adding users, Splitwiser allows direct adding via wallet address and leverages The Graph queries and ENS for easy friend searches. After forming the group, its members can add expenses until the trip ends or when they need to settle the bill. Our debt simplification algorithm minimizes the number of transactions required by recursively matching the biggest debtors and creditors. 
 
@@ -88,35 +88,44 @@ To get started with Scaffold-ETH 2 Hacker Edition, follow the steps below:
 
 1. Clone this repo & install dependencies
 
-```
+```bash
 git clone https://github.com/TUM-Blockchain-Club/splitwiser.git
-cd packages
+cd splitwiser
 yarn install
 ```
 
-2. Run a local network in the first terminal:
+2. Deploy the smart contract on Ethereum Sepolia and Base Sepolia
 
-```
-yarn chain
-```
-
-This command starts a local Ethereum network using Hardhat. The network runs on your local machine and can be used for testing and development. You can customize the network configuration in `hardhat.config.ts`.
-
-3. On a second terminal, deploy the test contract:
-
-```
-yarn deploy
+```bash
+yarn deploy --network baseSepolia
+yarn deploy --network sepolia
 ```
 
-This command deploys a test smart contract to the local network. The contract is located in `packages/hardhat/contracts` and can be modified to suit your needs. The `yarn deploy` command uses the deploy script located in `packages/hardhat/deploy` to deploy the contract to the network. You can also customize the deploy script.
+These commands deploy our smart contracts to Ethereum Sepolia and Base Sepolia accordingly. 
+You can also set your own network by changing the `--network` argument.
+These commands will also set the `scaffold-eth2` project configuration with the ABI, smart contract
+addresses, and others. They are very relevant for the next phases of the development.
 
-4. On a third terminal, start your NextJS app:
+3. Verify the smart contracts
 
+```bash
+yarn verify --network baseSepolia --api-url https://base-sepolia.blockscout.com/api
+yarn verify --network sepolia --api-url https://eth-sepolia.blockscout.com/api
 ```
+
+Verifying smart contracts on the Blockscout helps in debugging the smart contract. It also acts as transparency layer
+between you and your users. 
+
+Note: The Ethereum network API might will return an error if the script is already verified while 
+the Base network does not.
+
+4. Lastly, start your NextJS app:
+
+```bash
 yarn start
 ```
 
-Visit your app on: `http://localhost:3000`. You can interact with your smart contract using the `Debug Contracts` page. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
+Visit your app on: `http://localhost:3000`. You can tweak the app config in `packages/nextjs/scaffold.config.ts`.
 
 For more detailed information on features and possibilities of Scaffold-ETH 2 please refer to [Scaffold-ETH 2 READMDE](./READ-scaffold.md).
 
