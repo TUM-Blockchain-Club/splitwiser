@@ -2,11 +2,14 @@
 
 import React, { useEffect, useState } from "react";
 import Link from "next/link";
-import { useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { config } from "./config";
+import { useDynamicContext } from "@dynamic-labs/sdk-react-core";
 import { MinusIcon, PlusIcon } from "@radix-ui/react-icons";
+import { getTransactionReceipt } from "wagmi/actions";
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-import { useScaffoldReadContract } from "~~/hooks/scaffold-eth";
+import { useScaffoldReadContract, useScaffoldWriteContract } from "~~/hooks/scaffold-eth";
 
 const AddExpense = () => {
   const searchParams = useSearchParams();
@@ -17,6 +20,9 @@ const AddExpense = () => {
   const [customDistribution, setCustomDistribution] = useState<boolean>(false);
   const [amount, setAmount] = useState<number>(0);
   const [customFields, setCustomFields] = useState<{ address: string; amount: number }[]>([]);
+  const { primaryWallet } = useDynamicContext();
+  const connectedAddress = primaryWallet?.address;
+  const router = useRouter();
 
   const handleAddCustomField = () => {
     setCustomFields([...customFields, { address: "", amount: 0 }]);
@@ -71,9 +77,71 @@ const AddExpense = () => {
     }
   }, [allGroups, groupName]);
 
+  const { writeContractAsync: writeYourContractAsync } = useScaffoldWriteContract("Splitwiser");
+
+  async function addExpenseOnChain(): Promise<any> {
+    try {
+      if (!connectedAddress) {
+        throw new Error("No wallet connected");
+      } else {
+        console.log("connectedAddress", connectedAddress);
+        const result = await writeYourContractAsync({
+          functionName: "addExpense",
+          //query creditors ID in the group
+          args: [BigInt(4), [connectedAddress], [BigInt(amount)], "Expense"],
+        });
+        console.log("trx Hash:", result);
+        if (!result) {
+          throw new Error("No result returned");
+        } else {
+          const trx = await getTransactionReceipt(config, { hash: result });
+          console.log("Transaction Content", trx);
+          return trx;
+        }
+      }
+    } catch (e) {
+      console.error("Error setting greeting:", e);
+    }
+  }
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!connectedAddress) {
+      console.error("No wallet connected");
+      return;
+    }
+
+    try {
+      // Create the group on-chain and get the transaction result
+      const txResult = await addExpenseOnChain();
+      console.log("txResult", txResult);
+
+      // // Wait for the transaction to be mined and get the receipt
+      // const receipt = await txResult.wait();
+
+      const onChainGroupId = txResult;
+
+      console.log("Expense created on chain", txResult);
+
+      const queryParams = new URLSearchParams({
+        name: "Expense",
+        type: amount.toString(),
+        onChainId: onChainGroupId.toString(),
+      }).toString();
+
+      // Navigate to the new page
+      if (selectedGroupId) {
+        router.push(`/groups/${selectedGroupId.toString()}?${queryParams}`);
+      }
+    } catch (error) {
+      console.error("Failed to create expense", error);
+      // You might want to show an error message to the user here
+    }
+  }
+
   return (
     <>
-      <form className="flex flex-col space-y-4 p-4 max-w-md mx-3">
+      <form onSubmit={handleSubmit} className="flex flex-col space-y-4 p-4 max-w-md mx-3">
         <h1 className="text-3xl font-semibold">Add Expense</h1>
 
         <label className="form-control w-full max-w-xs">
