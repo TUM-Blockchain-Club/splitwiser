@@ -73,7 +73,7 @@ Splitwiser's goal is not just to replicate a web2 app on-chain but to demonstrat
 Before you begin, you need to install the following tools:
 
 - [Node (>= v18.17)](https://nodejs.org/en/download/)
-- Yarn ([v1](https://classic.yarnpkg.com/en/docs/install/) or [v2+](https://yarnpkg.com/getting-started/install))
+- Yarn [v2+](https://yarnpkg.com/getting-started/install)
 - [Git](https://git-scm.com/downloads)
 
 - You have to get a [Pimlico API key](https://dashboard.pimlico.io/sign-in) and put it in your env file (`NEXT_PUBLIC_PIMLICO_API_KEY`).
